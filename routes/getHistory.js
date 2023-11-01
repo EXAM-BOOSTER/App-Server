@@ -18,6 +18,10 @@ histRouter.route('/chapHistory')
         const userId = verified.id;
         try {
             const data = await QuizAttempt.find({ user: userId });
+            if(data == null){
+                return res.status(404);
+            }
+
             const filteredData = data.map((item) => {
                 const {
                   selectedAnswer,
@@ -51,7 +55,8 @@ histRouter.route('/chapHistory')
               res.status(200).json(filteredData);                        
         }
         catch (err) {
-            console.log('Error in getting history');        
+            console.log('Error in getting history');  
+            res.status(500).json({msg: 'An error occurred in fetching history'});
         }
 
     })

@@ -20,6 +20,7 @@ const usersRouter = require("./routes/users");
 const quizRouter = require("./routes/quizRouter");
 const submitRouter = require("./routes/history");
 const histRouter = require("./routes/getHistory");
+const seriesRouter = require("./routes/seriesRouter");
 const config = require("./config");
 
 const mongoose = require("mongoose");
@@ -275,6 +276,7 @@ app.use("/users", usersRouter);
 app.use("/quizes", quizRouter);
 app.use("/testSubmit", submitRouter);
 app.use("/history", histRouter);
+app.use("/series", seriesRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
