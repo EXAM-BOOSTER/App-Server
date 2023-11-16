@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/601a7710-64dc-42a1-94e3-012baf739081/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/ExamBooster",
+    "appService.deploySubpath": "."
+}

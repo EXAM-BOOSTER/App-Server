@@ -7,8 +7,9 @@ const optionSchema = new Schema({
   option: {
     type: String,
     required: true
-  }
-});
+  },
+  // _id: false
+},_id=false);
 
 const questionSchema = new Schema({
   question: {
@@ -65,7 +66,7 @@ const chapterSchema = new Schema({
   },
   isEnabled: {
     type: Boolean,
-    default: true
+    default: false
   }
 });
 const quizSchema = new Schema({

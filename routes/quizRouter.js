@@ -63,14 +63,16 @@ quizRouter.route('/')
 
 quizRouter.route('/:quizName')
     .get((req, res, next) => {
-        Quizes.findOne({name: req.params.quizName})
+        Quizes.findOne({ name: req.params.quizName })
             .then((quiz) => {
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'text/plain');
-                const chapters = quiz.chapter.map((chapter) => ({
-                    name: chapter.chapter,
-                    id: chapter._id,
-                }));
+                const chapters = quiz.chapter
+                    .filter((chapter) => chapter.isEnabled) // Filter out disabled chapters
+                    .map((chapter) => ({
+                        name: chapter.chapter,
+                        id: chapter._id,
+                    }));
                 res.end(JSON.stringify(chapters));
             }, (err) => next(err)).catch((err) => next(err));
     })
@@ -110,7 +112,7 @@ quizRouter.route('/:quizName/:chapterId')
             const quizName = req.params.quizName;
             const chapterId = req.params.chapterId;
 
-            const quiz = await Quizes.findOne({name: quizName});
+            const quiz = await Quizes.findOne({ name: quizName });
             if (!quiz) {
                 return res.status(404).json({ error: 'Quiz not found' });
             }

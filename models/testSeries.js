@@ -17,7 +17,7 @@ const optionSchema = new Schema({
     },
     answers: [optionSchema],
   
-    answer: {
+    correctAnswer: {
       type: Number,
       required: true
     },
@@ -36,7 +36,7 @@ const SeriesSchema = new Schema({
     seriesName:{type: String, required: true},
     isEnabled: {
         type: Boolean,
-        default: true
+        default: false
       },
     subjects: [subjectSchema]
 });
