@@ -43,7 +43,7 @@ const SeriesSchema = new Schema({
 
 const testSeries = new Schema({
     name:{type: String, required: true},
-    testSeries: [SeriesSchema]
+    testSeries: [SeriesSchema],  
 
 });
 

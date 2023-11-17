@@ -5,16 +5,8 @@ const jwt = require("jsonwebtoken");
 
 exports.signUp = async (req, res) => {
     try {    
-        let { name, email, password } = req.body;
-        // validate
-
-        // if (!email || !password)
-        //   return res.status(400).json({ msg: "Not all fields have been entered." });
-        // if (password.length < 5)
-        //   return res
-        //     .status(400)
-        //     .json({ msg: "The password needs to be at least 5 characters long." });
-
+        let { name, email, password, enrollment} = req.body;
+     
         const existingUser = await User.findOne({ email: email });        
         if (existingUser)
             return res
@@ -30,6 +22,7 @@ exports.signUp = async (req, res) => {
             name,
             email,
             password: passwordHash,
+            enrolledFor:enrollment
         });
         const savedUser = await newUser.save();        
         const token = jwt.sign({ id: savedUser._id }, process.env.JWT_SECRET);
@@ -38,7 +31,7 @@ exports.signUp = async (req, res) => {
         res.header('Authorization', `Bearer ${token}`);
         res.json({
             'name': savedUser.name,
-            'email': savedUser.email
+            'email': savedUser.email,            
         });
     } catch (err) {
         console.log("error happened", err);
@@ -70,7 +63,7 @@ exports.logIn = async (req, res) => {
         // res.cookie('token', token, { path: '/', domain: 'localhost', httpOnly: true, maxAge: 1800000 });
         res.header('Authorization', `Bearer ${token}`);
         return res.json({
-            existingUser
+            existingUser,            
         });
     } catch (err) {
         console.log('there is error in catch block');

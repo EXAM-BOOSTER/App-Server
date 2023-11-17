@@ -39,6 +39,11 @@ const quizAttemptSchema = new Schema({
         type: [Number], // Defines an array of numbers
         required: true, // You can specify whether the field is required
       },
+    visited:{
+        type: [Boolean],
+        required: true
+    },
+    time:{type: String, required: true},
     timestamp: { type: Date, default: Date.now },
 });
 

@@ -26,7 +26,8 @@ exports.googleSignIn = async (req, res) => {
         res.header('Authorization', `Bearer ${token}`);
         return res.json({
             'name': existingUser.name,
-            'email': existingUser.email
+            'email': existingUser.email,
+            'enrollment': existingUser.enrolledFor
         });
     }
     catch (err) {
