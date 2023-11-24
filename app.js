@@ -14,6 +14,7 @@ const chalk = require("chalk");
 require("dotenv").config();
 const session = require('express-session');
 const passport = require('passport');
+const mongoStore = require('connect-mongo');
 
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
@@ -202,11 +203,27 @@ connectDB();
 var app = express();
 
 app.enable("trust proxy");
-app.use(session({
-  secret: 'sV4T3Qnxjd8',
-  resave:false,
-  saveUninitialized: true,
-}));
+// ...
+app.use(
+  session({
+    secret: 'sV4T3Qnxjd8',
+    resave: true,
+    saveUninitialized: false,
+    cookie: {
+      domain: 'localhost:3000',
+      path: '/',
+      maxAge: 2 * 24 * 60 * 60 * 1000, // 2 days in milliseconds
+      httpOnly: true,
+      secure: false
+    },
+    store: mongoStore.create({
+      mongoUrl: DB,
+      collection: 'sessions',
+      touchAfter: 24 * 60 * 60, // 24 hours in seconds
+      autoRemove: 'native',
+    })
+  })
+);
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -271,8 +288,21 @@ app.disable("x-powered-by");
 // Set static folder
 app.use(express.static(path.join(__dirname, "public")));
 
+// Middleware to check if the user is logged in
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
+app.use((req, res, next) => {
+  if (req.session.userId) { // If the user ID exists in the session
+    console.log(req.session.userId);
+    // req.userId = req.session.userId; // Attach the user's ID to the request object
+    next(); // Call the next middleware
+  } else {
+    console.log(req.session);
+    console.log(req.session.userId);
+    return res.status(401).send(); // Set status to 401 as Unauthorized and send an empty response
+    // res.redirect('/login'); // Redirect to the login page
+  }
+});
 app.use("/quizes", quizRouter);
 app.use("/testSubmit", submitRouter);
 app.use("/history", histRouter);

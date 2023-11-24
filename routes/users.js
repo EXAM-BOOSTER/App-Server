@@ -27,6 +27,11 @@ router.post('/google',googleSignIn );
 //     res.send({ message: 'Authentication successful', user: req.user });
 //   }
 // );
+router.get('/logout', (req, res) => {
+    // req.logout();
+    req.session.destroy();
+    res.status(200).send();
+    });
 
 
 module.exports = router;

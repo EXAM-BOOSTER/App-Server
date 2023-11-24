@@ -16,8 +16,8 @@ submitRouter.route('/chapterTest/:subjectName')
     .post(async (req, res) => {
         const subjectName = req.params.subjectName;
         const { token, chapterId, questions, selectedAnswer, visited, time } = req.body;
-        const verified = jwt.verify(token, process.env.JWT_SECRET);
-        const userId = verified.id;
+        // const verified = jwt.verify(token, process.env.JWT_SECRET);
+        const userId = req.session.userId;
         // console.log(verified.id);
         // console.log(subjectName, token, questions, selectedAnswer);
         try {
@@ -62,8 +62,8 @@ submitRouter.route('/series/testSeries/')
     .post(async (req, res, next) => {
         try {
             const { token, seriesName, seriesId, selectedAnswers, visited,time } = req.body;
-            const verified = jwt.verify(token, process.env.JWT_SECRET);
-            const userId = verified.id;
+            // const verified = jwt.verify(token, process.env.JWT_SECRET);
+            const userId = req.session.userId;
 
             const seriesHistory = new SeriesHistory({
                 userId: userId,

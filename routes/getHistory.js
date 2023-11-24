@@ -15,9 +15,9 @@ histRouter.use(bodyParser.json());
 
 histRouter.route('/chapHistory')
   .post(async (req, res) => {
-    const { token } = req.body;
-    const verified = jwt.verify(token, process.env.JWT_SECRET);
-    const userId = verified.id;
+    // const { token } = req.body;
+    // const verified = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = req.session.userId;
     try {
       const data = await QuizAttempt.find({ user: userId });
       const seriesTest = await SeriesHistory.find({ userId: userId });

@@ -1,4 +1,4 @@
 module.exports = {
     'secretKey': '12345-67890-09876-54321',
-    'mongoUrl': 'mongodb://127.0.0.1/quiz'
+    'mongoUrl': 'mongodb+srv://nishantv:zZoXw67FMyloEryM@cluster0.rqzzldr.mongodb.net/ExamBooster?retryWrites=true&w=majority'
 }
