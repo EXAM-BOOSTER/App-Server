@@ -61,19 +61,20 @@ submitRouter.route('/chapterTest/:subjectName')
 submitRouter.route('/series/testSeries/')
     .post(async (req, res, next) => {
         try {
-            const { token, seriesName, seriesId, selectedAnswers, visited,time } = req.body;
+            const { token, seriesName, seriesId, selectedAnswer, visited,time } = req.body;
             // const verified = jwt.verify(token, process.env.JWT_SECRET);
+            console.log(selectedAnswer);
             const userId = req.session.userId;
 
             const seriesHistory = new SeriesHistory({
                 userId: userId,
                 seriesName: seriesName,
                 testId: seriesId,
-                selectedAnswer: selectedAnswers,
+                selectedAnswer: selectedAnswer,
                 visited: visited,
                 time: time
             });
-            const insertedSeriesHistory = await seriesHistory.save();
+            await seriesHistory.save();
             console.log('Series history inserted:');
             res.status(200);
         }
