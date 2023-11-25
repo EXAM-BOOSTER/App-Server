@@ -59,7 +59,7 @@ exports.logIn = async (req, res) => {
         const expirationTimeInSeconds = 1800; // 30 min
         const expirationTime = Math.floor(Date.now() / 1000) + expirationTimeInSeconds;
         req.session.userId = existingUser._id; // Save the user's ID in the session
-        console.log(req.session.userId,'fgdf')
+        console.log(req.session.userId);
         const token = jwt.sign({ id: existingUser._id, exp: expirationTime }, process.env.JWT_SECRET);
         res.setHeader("Access-Control-Expose-Headers", "*");
         // res.cookie('token', token, { path: '/', domain: 'localhost', httpOnly: true, maxAge: 1800000 });

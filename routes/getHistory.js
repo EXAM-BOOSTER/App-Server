@@ -1,8 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
-var authenticate = require('../authenticate');
-const jwt = require('jsonwebtoken');
+// const mongoose = require('mongoose');
+// var authenticate = require('../authenticate');
+// const jwt = require('jsonwebtoken');
 const QuizAttempt = require('../models/testHistory');
 const SeriesHistory = require('../models/seriesHistory');
 const testSeries = require('../models/testSeries');

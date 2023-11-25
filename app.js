@@ -307,6 +307,7 @@ app.use("/quizes", quizRouter);
 app.use("/testSubmit", submitRouter);
 app.use("/history", histRouter);
 app.use("/series", seriesRouter);
+app.use("/payment", require("./routes/payment"));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
