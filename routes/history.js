@@ -46,7 +46,7 @@ submitRouter.route('/chapterTest/:subjectName')
                 time: time
             });
 
-            const insertedQuizAttempt = await quizAttempt.save();
+            await quizAttempt.save();
             console.log('Quiz attempt inserted:');
             res.status(200);
         }
@@ -63,7 +63,6 @@ submitRouter.route('/series/testSeries/')
         try {
             const { token, seriesName, seriesId, selectedAnswer, visited,time } = req.body;
             // const verified = jwt.verify(token, process.env.JWT_SECRET);
-            console.log(selectedAnswer);
             const userId = req.session.userId;
 
             const seriesHistory = new SeriesHistory({
