@@ -43,7 +43,16 @@ const SeriesSchema = new Schema({
 
 const testSeries = new Schema({
     name:{type: String, required: true},
-    testSeries: [SeriesSchema],  
+    testSeries: [SeriesSchema], 
+    price: {
+        type: Number,
+        required: true,
+        default: 0
+      },
+    type: {
+        type: String,
+        required: true,        
+      }, 
 
 });
 

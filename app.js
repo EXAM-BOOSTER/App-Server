@@ -291,6 +291,13 @@ app.use(express.static(path.join(__dirname, "public")));
 // Middleware to check if the user is logged in
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
+app.get('/checkSession', (req, res) => {  
+  if (req.session.userId) {
+    res.status(200).send();
+  } else {
+    res.status(401).send();
+  }
+});
 app.use((req, res, next) => {
   if (req.session.userId) { // If the user ID exists in the session
     console.log(req.session.userId);

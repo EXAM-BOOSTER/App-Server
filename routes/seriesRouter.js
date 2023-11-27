@@ -15,7 +15,7 @@ seriesRouter.route('/')
             if (series == null)
                 return res.status(404).json({ msg: "No Series is Found!" });
             const data = series.map(function (item) {
-                return { name: item.name, id: item._id };
+                return { name: item.name, id: item._id , price: item.price, type: item.type};
             });
             res.status(200).json(data);
         }
