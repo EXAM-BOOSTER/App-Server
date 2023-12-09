@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 exports.signUp = async (req, res) => {
     try {    
         let { name, email, password, enrollment} = req.body;
+        console.log(req.body);
      
         const existingUser = await User.findOne({ email: email });        
         if (existingUser)
@@ -31,7 +32,9 @@ exports.signUp = async (req, res) => {
         res.header('Authorization', `Bearer ${token}`);
         res.json({
             'name': savedUser.name,
-            'email': savedUser.email,            
+            'email': savedUser.email,  
+            'enrollment': savedUser.enrolledFor,
+            'purchasedSeries':savedUser.purchasedSeries          
         });
     } catch (err) {
         console.log("error happened", err);

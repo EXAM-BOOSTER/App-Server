@@ -20,7 +20,8 @@ exports.googleSignIn = async (req, res) => {
             return res.json({
                 'name' : user.name,
                 'email': user.email,
-                'enrollment': user.enrolledFor
+                'enrollment': user.enrolledFor,
+                'purchasedSeries':user.purchasedSeries
             });
         }       
         const token = jwt.sign({ id: existingUser._id}, process.env.JWT_SECRET);
@@ -30,7 +31,8 @@ exports.googleSignIn = async (req, res) => {
         return res.json({
             'name': existingUser.name,
             'email': existingUser.email,
-            'enrollment': existingUser.enrolledFor
+            'enrollment': existingUser.enrolledFor,
+            'purchasedSeries':existingUser.purchasedSeries
         });
     }
     catch (err) {
