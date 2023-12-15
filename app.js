@@ -26,6 +26,7 @@ const config = require("./config");
 
 const mongoose = require("mongoose");
 const Quizes = require("./models/quizes");
+const user = require("./models/user");
 
 const DB = config.mongoUrl;
 
@@ -291,22 +292,29 @@ app.use(express.static(path.join(__dirname, "public")));
 // Middleware to check if the user is logged in
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
-app.get('/checkSession', (req, res) => {  
-  if (req.session.userId) {
-    res.status(200).send();
-  } else {
-    res.status(401).send();
+app.get('/checkSession', async (req, res) => {
+  try {
+    if (req.session.userId) {
+      const id = req.session.userId;
+      const User = await user.findById(id); // Find user by object ID
+      // console.log(User);
+      res.status(200).json({
+        purchasedSeries: User.purchasedSeries,
+        enrolledFor: User.enrolledFor,
+      });
+    } else {
+      res.status(401).json("Not logged in!").send();
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json("Internal Server Error").send();
   }
 });
 app.use((req, res, next) => {
-  if (req.session.userId) { // If the user ID exists in the session
-    console.log(req.session.userId);
-    // req.userId = req.session.userId; // Attach the user's ID to the request object
+  if (req.session.userId) { 
     next(); // Call the next middleware
   } else {
-    console.log(req.session);
-    console.log(req.session.userId);
-    return res.status(401).send(); // Set status to 401 as Unauthorized and send an empty response
+    return res.status(401).json("Login again!").send(); // Set status to 401 as Unauthorized and send an empty response
     // res.redirect('/login'); // Redirect to the login page
   }
 });
@@ -315,6 +323,7 @@ app.use("/testSubmit", submitRouter);
 app.use("/history", histRouter);
 app.use("/series", seriesRouter);
 app.use("/payment", require("./routes/payment"));
+app.use("/teachers", require("./routes/teachers"));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
