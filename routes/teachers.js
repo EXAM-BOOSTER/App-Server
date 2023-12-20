@@ -38,10 +38,6 @@ teacherRouter.route('/make_test')
                         explanation: question.explanation
                     }
                 });
-                // if (subjects[i].subject == "Mathematics") {
-                //     console.log('selected', selectedQuestions);
-                // }
-                // console.log('selected', selectedQuestions.length);
                 testQuestions.push({ subject: subjects[i].subject, selectedQuestions });
                 // testQuestions.push({ subject: element.subject, selectedQuestions });
             }

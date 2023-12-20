@@ -66,10 +66,9 @@ histRouter.route('/chapHistory')
           history.push(object);
         });
       }
-      if (seriesTest != null) {
+      if (seriesTest != null) {        
         await Promise.all(seriesTest.map(async (item) => {
-          // console.log(seriesTest);
-          const test = await testSeries.findOne({name : item.seriesName});
+          const test = await testSeries.findOne({name : item.seriesName});          
           const testData = await test.testSeries.id(item.testId);
           const {
             selectedAnswer,

@@ -47,8 +47,8 @@ seriesRouter.route('/:seriesId/:id')
     .get(async (req, res) => {
         try {
             const series = await TestSeries.findById(req.params.seriesId);
+            // console.log(req.params.id, req.params.seriesId);
             const listSeries = await series.testSeries.id(req.params.id);
-            // console.log(series.TestSeries.)           
             if (series == null)
                 return res.status(404).json({ msg: "No Series is Found!" });
             const data = listSeries.subjects.map(function (item) {

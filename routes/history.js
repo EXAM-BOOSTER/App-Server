@@ -18,7 +18,7 @@ submitRouter.route('/chapterTest/:subjectName')
         const { token, chapterId, questions, selectedAnswer, visited, time } = req.body;
         // const verified = jwt.verify(token, process.env.JWT_SECRET);
         const userId = req.session.userId;
-        // console.log(verified.id);
+        // console.log(token, userId, chapterId, questions, selectedAnswer, visited, time);
         // console.log(subjectName, token, questions, selectedAnswer);
         try {
             const quesData = [];
