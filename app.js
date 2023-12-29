@@ -301,6 +301,7 @@ app.get('/checkSession', async (req, res) => {
       res.status(200).json({
         purchasedSeries: User.purchasedSeries,
         enrolledFor: User.enrolledFor,
+        profession: User.profession,
       });
     } else {
       res.status(401).json("Not logged in!").send();

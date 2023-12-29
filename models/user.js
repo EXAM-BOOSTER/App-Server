@@ -7,6 +7,7 @@ const userDetails = new Schema({
     password: {type: String,  },
     purchasedSeries: {type: Array, default: ['65412a8b32010a9b59320177'], _id: false},
     enrolledFor: {type: String, default: "", required: true},
+    profession: {type: Boolean, required: true},
 
 });
 

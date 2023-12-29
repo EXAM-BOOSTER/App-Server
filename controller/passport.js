@@ -2,7 +2,7 @@ const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 exports.googleSignIn = async (req, res) => {
     try {
-        let { name, email ,enrollment} = req.body;
+        let { name, email ,enrollment, profession} = req.body;
         const existingUser = await User.findOne({ email: email });
         res.setHeader("Access-Control-Expose-Headers", "*");
 
@@ -11,7 +11,8 @@ exports.googleSignIn = async (req, res) => {
             const newUser = new User({
                 name: name,
                 email: email,
-                enrolledFor: enrollment
+                enrolledFor: enrollment,
+                profession: profession,
             });
             const user = await newUser.save();
             const token = jwt.sign({ id: user._id}, process.env.JWT_SECRET);
@@ -21,7 +22,8 @@ exports.googleSignIn = async (req, res) => {
                 'name' : user.name,
                 'email': user.email,
                 'enrollment': user.enrolledFor,
-                'purchasedSeries':user.purchasedSeries
+                'purchasedSeries':user.purchasedSeries,
+                profession: user.profession,
             });
         }       
         const token = jwt.sign({ id: existingUser._id}, process.env.JWT_SECRET);
@@ -32,7 +34,8 @@ exports.googleSignIn = async (req, res) => {
             'name': existingUser.name,
             'email': existingUser.email,
             'enrollment': existingUser.enrolledFor,
-            'purchasedSeries':existingUser.purchasedSeries
+            'purchasedSeries':existingUser.purchasedSeries,
+            profession: existingUser.profession,
         });
     }
     catch (err) {

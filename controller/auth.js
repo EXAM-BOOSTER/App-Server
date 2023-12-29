@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 
 exports.signUp = async (req, res) => {
     try {    
-        let { name, email, password, enrollment} = req.body;
+        let { name, email, password, enrollment, profession} = req.body;
         console.log(req.body);
      
         const existingUser = await User.findOne({ email: email });        
@@ -23,7 +23,8 @@ exports.signUp = async (req, res) => {
             name,
             email,
             password: passwordHash,
-            enrolledFor:enrollment
+            enrolledFor:enrollment,
+            profession: profession,
         });
         const savedUser = await newUser.save();        
         const token = jwt.sign({ id: savedUser._id }, process.env.JWT_SECRET);
@@ -34,7 +35,8 @@ exports.signUp = async (req, res) => {
             'name': savedUser.name,
             'email': savedUser.email,  
             'enrollment': savedUser.enrolledFor,
-            'purchasedSeries':savedUser.purchasedSeries          
+            'purchasedSeries':savedUser.purchasedSeries,
+            profession: savedUser.profession,          
         });
     } catch (err) {
         console.log("error happened", err);
