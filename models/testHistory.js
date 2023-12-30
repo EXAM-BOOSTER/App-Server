@@ -30,9 +30,9 @@ const quizAttemptSchema = new Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     subject: {type: String, required: true},
     chapter: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         required: true,
-        ref: 'Quiz.chapter', // Reference to the specific chapter within the quiz
+        // ref: 'Quiz.chapter', // Reference to the specific chapter within the quiz
     },
     question: [questionSchema],
     selectedAnswer: {

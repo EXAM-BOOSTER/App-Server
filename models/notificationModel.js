@@ -10,7 +10,7 @@ const notificationSchema = new mongoose.Schema({
     },
     createdAt: {
         type: Date,
-        default: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
+        default: Date.now
     }
 });
 

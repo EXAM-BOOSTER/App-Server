@@ -15,7 +15,7 @@ submitRouter.use(bodyParser.json());
 submitRouter.route('/chapterTest/:subjectName')
     .post(async (req, res) => {
         const subjectName = req.params.subjectName;
-        const { token, chapterId, questions, selectedAnswer, visited, time } = req.body;
+        const { token, chapterName, questions, selectedAnswer, visited, time } = req.body;
         // const verified = jwt.verify(token, process.env.JWT_SECRET);
         const userId = req.session.userId;
         // console.log(token, userId, chapterId, questions, selectedAnswer, visited, time);
@@ -39,7 +39,7 @@ submitRouter.route('/chapterTest/:subjectName')
             const quizAttempt = new QuizAttempt({
                 user: userId,
                 subject: subjectName,
-                chapter: chapterId,
+                chapter: chapterName,
                 question: quesData,
                 selectedAnswer: selectedAnswer,
                 visited: visited,

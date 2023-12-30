@@ -325,6 +325,7 @@ app.use("/history", histRouter);
 app.use("/series", seriesRouter);
 app.use("/payment", require("./routes/payment"));
 app.use("/teachers", require("./routes/teachers"));
+app.use("/notifications", require("./routes/notification"));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
