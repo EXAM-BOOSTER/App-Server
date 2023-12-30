@@ -42,9 +42,9 @@ paymentRouter.post('/success', async (req, res) => {
             });
 
             payment.save(); 
-            await User.findByIdAndUpdate(userId, { $push: { purchasedSeries: seriesId } });               
+            const user = await User.findByIdAndUpdate(userId, { $push: { purchasedSeries: seriesId } });               
             // Send a success response back to the Flutter app
-            res.status(200).json({ message: 'Payment successful' });
+            res.status(200).json({ message: 'Payment successful', purchasedSeries: user.purchasedSeries});
 
         } else {
             // The signature is not valid, return an error response
