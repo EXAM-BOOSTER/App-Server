@@ -83,7 +83,7 @@ const connectDB = async () => {
   const con = await mongoose.connect('mongodb+srv://nishantv:zZoXw67FMyloEryM@cluster0.rqzzldr.mongodb.net/ExamBooster?retryWrites=true&w=majority', {
     useNewUrlParser: true,
     useCreateIndex: true,
-    useFindAndModify: false,  
+    useFindAndModify: false,
     useUnifiedTopology: true,
     autoIndex: true,
   });
@@ -126,49 +126,49 @@ connectDB();
 //           }, 
 //           {
 //             question: 'The major contributors to the greenhouses gases are',
-      //       answers: [{'option': 'factories'}, {'option': 'automobiles'},{'option': 'deforestation'},{'option': 'All of the above'} ],
-      //       answer: 4,
-      //       explanation: 'All affects greenhouse'
-      //     }         
-      //   ],
-      //   instructions: 'Instructions for Environmental Test',
-      // },
-      // {
-      //   chapter: ' Molecular Basis of Inheritance',
-      //   instructions: 'Instructions for Test',
-      //   questions: [
-      //     {
-      //       question: 'Three H-bonds is exhibited by which DNA bases in the double helix structure?',
-      //       answers: [{ option: 'Guanine, Cytosine' }, { option: 'Adenine, Guanine' },{'option': 'Adenine, Thymine'}, {'option': 'Cytosine, Thymine'}],
-      //       answer: 1,
-      //       explanation: 'Cytosine and Guanine exhibit three hydrogen-bonds.'
-      //     },
-      //     {
-      //       question: 'A nitrogenous base is linked to the pentose sugar through',
-      //       answers: [{ option: 'Phosphodiester linkage' }, { option: 'Phosphoester linkage' },{'option': 'O-glycosidic linkage'}, {'option': 'N-glycosidic linkage'}],
-      //       answer: 4,
-      //       explanation: 'A nitrogenous base is linked to the pentose sugar through a glycosidic bond'
-      //     },
-      //   ],
-      // },
-      //  {
-      //     chapter: 'Trigonometry',
-      //     instructions: 'Instructions for Trigonomtry Test',
-      //     questions: [
-      //       {
-      //         question: 'what is columbs law?',
-      //         answers: [{ option: 'Option A' }, { option: 'Option B' }],
-      //         answer: 1,
-      //       },
-      //       {
-      //         question: 'what is maxwell law?',
-      //         answers: [{ option: 'Option A' }, { option: 'Option B' }],
-      //         answer: 1,
-      //       },
-      //     ],
-      //   },
-  //   ],
-  // },
+//       answers: [{'option': 'factories'}, {'option': 'automobiles'},{'option': 'deforestation'},{'option': 'All of the above'} ],
+//       answer: 4,
+//       explanation: 'All affects greenhouse'
+//     }         
+//   ],
+//   instructions: 'Instructions for Environmental Test',
+// },
+// {
+//   chapter: ' Molecular Basis of Inheritance',
+//   instructions: 'Instructions for Test',
+//   questions: [
+//     {
+//       question: 'Three H-bonds is exhibited by which DNA bases in the double helix structure?',
+//       answers: [{ option: 'Guanine, Cytosine' }, { option: 'Adenine, Guanine' },{'option': 'Adenine, Thymine'}, {'option': 'Cytosine, Thymine'}],
+//       answer: 1,
+//       explanation: 'Cytosine and Guanine exhibit three hydrogen-bonds.'
+//     },
+//     {
+//       question: 'A nitrogenous base is linked to the pentose sugar through',
+//       answers: [{ option: 'Phosphodiester linkage' }, { option: 'Phosphoester linkage' },{'option': 'O-glycosidic linkage'}, {'option': 'N-glycosidic linkage'}],
+//       answer: 4,
+//       explanation: 'A nitrogenous base is linked to the pentose sugar through a glycosidic bond'
+//     },
+//   ],
+// },
+//  {
+//     chapter: 'Trigonometry',
+//     instructions: 'Instructions for Trigonomtry Test',
+//     questions: [
+//       {
+//         question: 'what is columbs law?',
+//         answers: [{ option: 'Option A' }, { option: 'Option B' }],
+//         answer: 1,
+//       },
+//       {
+//         question: 'what is maxwell law?',
+//         answers: [{ option: 'Option A' }, { option: 'Option B' }],
+//         answer: 1,
+//       },
+//     ],
+//   },
+//   ],
+// },
 //   {
 //     name: 'Chemistry',
 //     instructions: 'Instructions for Quiz 2',
@@ -274,7 +274,7 @@ app.use(hpp());
 // }));
 
 app.options("*", cors());
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   res.header('Access-Control-Allow-Credentials', true);
   res.header('Access-Control-Allow-Origin', req.headers.origin);
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,UPDATE,OPTIONS');
@@ -297,14 +297,22 @@ app.get('/checkSession', async (req, res) => {
     if (req.session.userId) {
       const id = req.session.userId;
       const User = await user.findById(id); // Find user by object ID
-      // console.log(User);
-      res.status(200).json({
-        purchasedSeries: User.purchasedSeries,
-        enrolledFor: User.enrolledFor,
-        profession: User.profession,
-      });
+      if (!User) {
+        res.status(200).json({
+          profession: false,
+        }).send();
+      }
+      else {
+        res.status(200).json({
+          // check if user is student then send the student data else send the teacher data 
+
+          purchasedSeries: User.purchasedSeries,
+          enrolledFor: User.enrolledFor,
+          profession: User.profession,
+        });
+      }
     } else {
-      res.status(401).json("Not logged in!").send();
+      res.status(401).json({msg:"Not logged in!"}).send();
     }
   } catch (error) {
     console.error(error);
@@ -312,7 +320,7 @@ app.get('/checkSession', async (req, res) => {
   }
 });
 app.use((req, res, next) => {
-  if (req.session.userId) { 
+  if (req.session.userId) {
     next(); // Call the next middleware
   } else {
     return res.status(401).json("Login again!").send(); // Set status to 401 as Unauthorized and send an empty response
@@ -339,8 +347,7 @@ app.use(function (err, req, res, next) {
   res.locals.error = req.app.get("env") === "development" ? err : {};
 
   winston.error(
-    `${err.status || 500} - ${err.message} - ${req.originalUrl} - ${
-      req.method
+    `${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method
     } - ${req.ip}`
   );
   // render the error page

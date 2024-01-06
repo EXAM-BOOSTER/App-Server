@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 var authenticate = require('../authenticate');
-
+const Buffer = require('buffer').Buffer;
 const Quizes = require("../models/quizes");
 
 const quizRouter = express.Router();
@@ -62,9 +62,9 @@ quizRouter.route('/')
 
 
 quizRouter.route('/:quizName')
-    .get((req, res, next) => {
+    .get((req, res, next) => {        
         Quizes.findOne({ name: req.params.quizName })
-            .then((quiz) => {
+            .then((quiz) => {            
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'text/plain');
                 const chapters = quiz.chapter
@@ -121,6 +121,7 @@ quizRouter.route('/:quizName/:chapterId')
             if (!chapter) {
                 return res.status(404).json({ error: 'Chapter not found' });
             }
+            // let base64Image = Buffer.from(imageData).toString('base64');
 
             const questions = chapter.questions.map((question) => ({
                 question: question.question,
@@ -128,9 +129,9 @@ quizRouter.route('/:quizName/:chapterId')
                 correctAnswer: question.answer,
                 answers: question.answers.map((answer) => ({
                     option: answer.option,
-                    // optImage: answer.optImage,
                 })),
                 explanation: question.explanation,
+                quesImage: question.quesImage,
             }));
 
             res.json(questions);

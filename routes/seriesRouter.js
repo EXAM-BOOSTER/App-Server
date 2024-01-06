@@ -13,7 +13,7 @@ seriesRouter.route('/')
         try {
             const series = await TestSeries.find({});
             if (series == null)
-                return res.status(404).json({ msg: "No Series is Found!" });
+                return res.status(404).json({ msg: "No Series is Found!" });            
             const data = series.map(function (item) {
                 return { name: item.name, id: item._id , price: item.price, type: item.type};
             });

@@ -57,4 +57,19 @@ paymentRouter.post('/success', async (req, res) => {
     }
 });
 
+paymentRouter.post('/freeSeries', async (req, res) => {
+    // Handle the response from successful payment here
+    const { seriesId } = req.body; // Assuming the payment response is sent in the request body
+    const userId = req.session.userId;
+    try {
+        const user = await User.findByIdAndUpdate(userId, { $push: { purchasedSeries: seriesId } });               
+        // Send a success response back to the Flutter app
+        res.status(200).json({ message: 'Payment successful', purchasedSeries: user.purchasedSeries});
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).json({ error: 'Error in processing payment' });
+    }
+});
+
 module.exports = paymentRouter;

@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const Quizes = require("../models/quizes");
 const katex = require('katex');
+const Teacher = require("../models/teacherModel");
 
 const teacherRouter = express.Router();
 teacherRouter.use(bodyParser.json());
@@ -10,6 +11,11 @@ teacherRouter.route('/make_test')
     .get(async (req, res) => {
 
         try {
+            const teacher = await Teacher.findById(req.session.userId);
+            console.log(teacher);
+            if(teacher.MOT < 1){
+                return res.status(400).json({ message: "You have used all your MOTs" });
+            }
             // Array of subjects with chapters and number of questions
             let { subjects, numQues } = req.body;
             subjects = JSON.parse(subjects);
@@ -41,8 +47,8 @@ teacherRouter.route('/make_test')
                 testQuestions.push({ subject: subjects[i].subject, selectedQuestions });
                 // testQuestions.push({ subject: element.subject, selectedQuestions });
             }
-
-            console.log(testQuestions);
+            //decrease the MOT from the teacher
+            await Teacher.findByIdAndUpdate(req.session.userId, { $inc: { MOT: -1 } });            
             // Send the test questions as the response
             res.json(testQuestions);
         }

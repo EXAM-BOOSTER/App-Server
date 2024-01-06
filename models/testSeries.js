@@ -24,6 +24,10 @@ const optionSchema = new Schema({
     explanation: {
       type: String,
       default: ""
+    },
+    type: {
+      type: String,
+      required: true
     }
   });
 

@@ -1,14 +1,21 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-
+const imageSchema = new Schema({
+  image: {
+    type: Buffer,    
+  },
+  contentType: {
+    type: String,    
+  },  
+},_id=false);
 
 const optionSchema = new Schema({
   option: {
     type: String,
     required: true
   },
-  // _id: false
+  optImage: imageSchema
 },_id=false);
 
 const questionSchema = new Schema({
@@ -27,7 +34,7 @@ const questionSchema = new Schema({
     type: Boolean,
     default: true
   },
-
+  quesImage: imageSchema,
   explanation: {
     type: String,
     default: ""

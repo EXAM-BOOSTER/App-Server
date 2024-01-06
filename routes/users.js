@@ -1,4 +1,4 @@
-const {signUp, logIn} = require('../controller/auth');
+const {signUp, logIn, teacherLogIn, teacherSignUp} = require('../controller/auth');
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
@@ -11,7 +11,8 @@ const {googleSignIn} = require('../controller/passport');
 /* GET users listing. */
 router.post('/signup', signUp);
 router.post('/login', logIn);
-
+router.post('/teacher/signup', teacherSignUp);
+router.post('/teacher/login', teacherLogIn);
 // Google Sign-In Route
 router.post('/google',googleSignIn );
 
@@ -27,8 +28,7 @@ router.post('/google',googleSignIn );
 //     res.send({ message: 'Authentication successful', user: req.user });
 //   }
 // );
-router.get('/logout', (req, res) => {
-    // req.logout();
+router.get('/logout', (req, res) => {    
     req.session.destroy();
     res.status(200).send();
     });
