@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const Quizes = require("../models/quizes");
 const katex = require('katex');
 const Teacher = require("../models/teacherModel");
+const MOT = require("../models/motModel");
 
 const teacherRouter = express.Router();
 teacherRouter.use(bodyParser.json());
@@ -149,5 +150,22 @@ function shuffle(array) {
     return array;
 }
 
+teacherRouter.route('/mot')
+.get(async (req, res) => {
+    try {
+        const mot = await MOT.find({}); 
+        
+        const data = mot.map(function (item) {
+            return { description: item.description, price: item.price, motNumber: item.motNumber};
+        });
+        res.status(200).json(data);
+    }
+    catch (err) {
+        if(err instanceof NotFoundError)
+            return res.status(400).json({ message: "No MOTs found" });
+        console.log(err);
+        res.status(500).json({ message: err.message });
+    }
+});
 
 module.exports = teacherRouter;
