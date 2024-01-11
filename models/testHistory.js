@@ -6,6 +6,10 @@ const optionSchema = new Schema({
     option: {
       type: String,
       required: true
+    },
+    optImage:{
+      type: String,
+      default: ""
     }
   });
   
@@ -21,6 +25,10 @@ const optionSchema = new Schema({
       required: true
     },
     explanation: {
+      type: String,
+      default: ""
+    },
+    quesImage:{
       type: String,
       default: ""
     }

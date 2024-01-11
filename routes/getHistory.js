@@ -39,12 +39,13 @@ histRouter.route('/chapHistory')
 
           // Modify the 'question' array to filter out unwanted fields within each question object
           const filteredQuestions = question.map((q) => {
-            const { answer, explanation, question, answers } = q;
+            const { answer, explanation, question, answers, quesImage } = q;
             return {
               correctAnswer: answer,
               explanation,
               question,
               answers,
+              quesImage
             };
           });
           const subjectData = [{
@@ -82,12 +83,13 @@ histRouter.route('/chapHistory')
           testData.subjects.map((item) => {
             const subjectName = item.subjectName;
             const filteredQuestions = item.questions.map((q) => {
-              const { correctAnswer, explanation, question, answers } = q;
+              const { correctAnswer, explanation, question, answers,quesImage } = q;
               return {
                 correctAnswer,
                 explanation,
                 question,
                 answers,
+                quesImage
               };
             });
             const subdata ={

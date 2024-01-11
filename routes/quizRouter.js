@@ -129,6 +129,7 @@ quizRouter.route('/:quizName/:chapterId')
                 correctAnswer: question.answer,
                 answers: question.answers.map((answer) => ({
                     option: answer.option,
+                    optImage: answer.optImage,
                 })),
                 explanation: question.explanation,
                 quesImage: question.quesImage,
