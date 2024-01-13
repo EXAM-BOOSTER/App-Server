@@ -1,6 +1,5 @@
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
 const Teacher = require("../models/teacherModel");
 
 exports.signUp = async (req, res) => {
@@ -48,16 +47,9 @@ exports.logIn = async (req, res) => {
                 .json({ msg: "Invalid credentials." });
 
         const isMatch = await bcrypt.compare(password, existingUser.password);
-        if (!isMatch) return res.status(400).json({ msg: "Invalid credentials." });
-        // Set the expiration time (in seconds from the current time)
-        const expirationTimeInSeconds = 1800; // 30 min
-        const expirationTime = Math.floor(Date.now() / 1000) + expirationTimeInSeconds;
+        if (!isMatch) return res.status(400).json({ msg: "Invalid credentials." });        
         req.session.userId = existingUser._id; // Save the user's ID in the session
-        console.log(req.session.userId);
-        const token = jwt.sign({ id: existingUser._id, exp: expirationTime }, process.env.JWT_SECRET);
-        res.setHeader("Access-Control-Expose-Headers", "*");
-        // res.cookie('token', token, { path: '/', domain: 'localhost', httpOnly: true, maxAge: 1800000 });
-        res.header('Authorization', `Bearer ${token}`);
+            
         return res.json({
             existingUser,            
         });

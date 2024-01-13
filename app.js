@@ -31,7 +31,7 @@ const user = require("./models/user");
 const DB = config.mongoUrl;
 
 mongoose.set("autoIndex", true);
-// const sampleQuizData = {
+
 //   name: 'Science',
 //   instructions: 'Answer the following questions:',
 //   isEnabled: true,
@@ -80,7 +80,7 @@ mongoose.set("autoIndex", true);
 //   },
 // };
 const connectDB = async () => {
-  const con = await mongoose.connect('mongodb+srv://nishantv:zZoXw67FMyloEryM@cluster0.rqzzldr.mongodb.net/ExamBooster?retryWrites=true&w=majority', {
+  const con = await mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,
@@ -93,113 +93,6 @@ const connectDB = async () => {
 };
 
 connectDB();
-
-// // Create a new Quiz document in the database
-// const newQuiz = new Quizes(sampleQuizData);
-
-// // Save the quiz document
-// newQuiz.save((err, savedQuiz) => {
-//   if (err) {
-//     console.error('Error saving quiz data:', err);
-//   } else {
-//     console.log('Sample quiz data saved to the database:', savedQuiz);
-//   }
-// })
-// const quizData = [
-//   {
-//     name: 'Biology',    
-//     chapter: [
-//       {
-//         chapter: 'Environmental issues',
-//         questions: [
-//           {
-//             question: 'Which is the most important factors of Greenhouse Effect?',
-//             answers: [{ option: 'Water Vapour' }, { option: 'Carbon Dioxide' }, {'option': 'CCl'}, {'option': 'Nitrogen'}],
-//             answer: 1,
-//             explanation: "Water vapour"
-//           },
-//           {
-//             question: 'Which one of the following is a wrong statement?',
-//             answers: [{ option: 'Ozone in upper part of atmosphere is harmful to animals' }, { option: 'Most of the forests have been lost in tropical areas' }, {'option': 'Eutrophication is a natural phenomenon in freshwater bodies'}, {'option': 'Greenhouse effect is a natural phenomenon'}],
-//             answer: 4,
-//             explanation: 'Greenhouse effect is cause by release of certain gases which are caused by human activity.'
-//           }, 
-//           {
-//             question: 'The major contributors to the greenhouses gases are',
-//       answers: [{'option': 'factories'}, {'option': 'automobiles'},{'option': 'deforestation'},{'option': 'All of the above'} ],
-//       answer: 4,
-//       explanation: 'All affects greenhouse'
-//     }         
-//   ],
-//   instructions: 'Instructions for Environmental Test',
-// },
-// {
-//   chapter: ' Molecular Basis of Inheritance',
-//   instructions: 'Instructions for Test',
-//   questions: [
-//     {
-//       question: 'Three H-bonds is exhibited by which DNA bases in the double helix structure?',
-//       answers: [{ option: 'Guanine, Cytosine' }, { option: 'Adenine, Guanine' },{'option': 'Adenine, Thymine'}, {'option': 'Cytosine, Thymine'}],
-//       answer: 1,
-//       explanation: 'Cytosine and Guanine exhibit three hydrogen-bonds.'
-//     },
-//     {
-//       question: 'A nitrogenous base is linked to the pentose sugar through',
-//       answers: [{ option: 'Phosphodiester linkage' }, { option: 'Phosphoester linkage' },{'option': 'O-glycosidic linkage'}, {'option': 'N-glycosidic linkage'}],
-//       answer: 4,
-//       explanation: 'A nitrogenous base is linked to the pentose sugar through a glycosidic bond'
-//     },
-//   ],
-// },
-//  {
-//     chapter: 'Trigonometry',
-//     instructions: 'Instructions for Trigonomtry Test',
-//     questions: [
-//       {
-//         question: 'what is columbs law?',
-//         answers: [{ option: 'Option A' }, { option: 'Option B' }],
-//         answer: 1,
-//       },
-//       {
-//         question: 'what is maxwell law?',
-//         answers: [{ option: 'Option A' }, { option: 'Option B' }],
-//         answer: 1,
-//       },
-//     ],
-//   },
-//   ],
-// },
-//   {
-//     name: 'Chemistry',
-//     instructions: 'Instructions for Quiz 2',
-//     chapter: [
-//       {
-//         chapter: 'Quantum Chemistry',
-//         questions: [
-//           {
-//             question: 'what is spin quantum number?',
-//             answers: [{ option: 'Option A' }, { option: 'Option B' }],
-//             answer: 1,
-//           },
-//           {
-//             question: 'what is degenerate orbitals?',
-//             answers: [{ option: 'Option A' }, { option: 'Option B' }],
-//             answer: 2,
-//           },
-//         ],
-//       }
-//     ],
-//   },
-// ];
-
-// // Insert the data into the database
-// Quizes.insertMany(quizData)
-//   .then(function () {
-//     console.log('Data inserted successfully');
-//   })
-//   .catch(function (error) {
-//     console.error('Error inserting data:', error);
-//   })
 
 var app = express();
 
@@ -235,10 +128,6 @@ app.use(express.urlencoded({ extended: true, limit: "10kb" }));
 // Set security HTTP headers
 app.use(helmet());
 
-// view engine setup
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "jade");
-
 app.use(morgan("combined", { stream: winston.stream }));
 
 app.use(cookieParser("12345-67890"));
@@ -247,7 +136,7 @@ app.use(cookieParser("12345-67890"));
 const limiter = rateLimit({
   max: 100,
   windowMs: 60 * 60 * 1000,
-  messege: "Too many requests from this IP, Please try again in an hour!",
+  message: "Too many requests from this IP, Please try again in an hour!",
 });
 app.use("/", limiter);
 
@@ -274,23 +163,23 @@ app.use(hpp());
 // }));
 
 app.options("*", cors());
-app.use(function (req, res, next) {
-  res.header('Access-Control-Allow-Credentials', true);
-  res.header('Access-Control-Allow-Origin', req.headers.origin);
-  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,UPDATE,OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept');
-  next();
-});
 
 app.use(compression());
 
 app.disable("x-powered-by");
 
-// Set static folder
-app.use(express.static(path.join(__dirname, "public")));
 
 // Middleware to check if the user is logged in
 app.use("/", indexRouter);
+app.use((req, res, next) => {
+  const userAgent = req.headers['user-agent'];
+
+  if (userAgent.includes('Mozilla') || userAgent.includes('Chrome') || userAgent.includes('Safari') || userAgent.includes('Firefox') || userAgent.includes('Edge') || userAgent.includes('Opera') || userAgent.includes('OPR') || userAgent.includes('Trident') || userAgent.includes('MSIE')) {
+    res.status(403).send('Access denied');
+  } else {
+    next();
+  }
+});
 app.use("/users", usersRouter);
 app.get('/checkSession', async (req, res) => {
   try {
@@ -334,6 +223,7 @@ app.use("/series", seriesRouter);
 app.use("/payment", require("./routes/payment"));
 app.use("/teachers", require("./routes/teachers"));
 app.use("/notifications", require("./routes/notification"));
+app.use("/pyqs", require("./routes/pyqRouter"));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -352,7 +242,7 @@ app.use(function (err, req, res, next) {
   );
   // render the error page
   res.status(err.status || 500);
-  res.render("error");
+  // res.render("error");
 });
 
 module.exports = app;
