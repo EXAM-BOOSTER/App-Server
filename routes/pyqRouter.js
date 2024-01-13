@@ -11,17 +11,27 @@ const PyQ = require('../models/pyqModel');
 pyqRouter.route('/:name')
     .get(async (req, res) => {
         try {
-            const name =req.params.name;
+            const name = req.params.name;
 
             // Fetch data from PyQ model using the name
-            const pyq = await PyQ.findOne({name: name});
-            const data = pyq.PYQs.map((item) => {
-                const { year, subjects, shift } = item;
-                return {
-                    year,                    
-                    shift
-                };
-            });                        
+            const pyq = await PyQ.findOne({ name: name });
+            const latestYear = pyq.PYQs.reduce((latest, item) => {
+                if (item.year > latest) {
+                    return item.year;
+                }
+                return latest;
+            }, 0);
+
+            const data = pyq.PYQs
+                .filter((item) => item.year === latestYear)
+                .map((item) => {
+                    const { year, shift } = item;
+                    return {
+                        year,
+                        shift
+                    };
+                });
+
             res.json(data);
         } catch (error) {
             // Handle any errors that occur during the process

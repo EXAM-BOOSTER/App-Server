@@ -197,3 +197,9 @@
 {"message":"::ffff:192.168.43.249 - - [13/Jan/2024:17:39:56 +0000] \"GET /checkSession HTTP/1.1\" 200 116 \"-\" \"Dart/3.2 (dart:io)\"\n","level":"info"}
 {"message":"::ffff:192.168.43.249 - - [13/Jan/2024:17:39:58 +0000] \"POST /history/chapHistory/ HTTP/1.1\" 200 - \"-\" \"Dart/3.2 (dart:io)\"\n","level":"info"}
 {"message":"::ffff:192.168.43.249 - - [13/Jan/2024:17:39:58 +0000] \"GET /series HTTP/1.1\" 200 307 \"-\" \"Dart/3.2 (dart:io)\"\n","level":"info"}
+{"message":"::1 - - [13/Jan/2024:17:50:00 +0000] \"GET / HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0\"\n","level":"info"}
+{"message":"::1 - - [13/Jan/2024:17:50:10 +0000] \"GET /pyqs/JEE/2022 HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0\"\n","level":"info"}
+{"message":"::1 - - [13/Jan/2024:17:50:15 +0000] \"GET /pyqs/JEE/ HTTP/1.1\" 200 189 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0\"\n","level":"info"}
+{"message":"::1 - - [13/Jan/2024:17:50:27 +0000] \"GET /pyqs/JEE/2023/26%20April%20Morning%20Shift HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0\"\n","level":"info"}
+{"message":"::1 - - [13/Jan/2024:17:50:34 +0000] \"GET /pyqs/JEE/2023/ HTTP/1.1\" 200 189 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0\"\n","level":"info"}
+{"message":"::1 - - [13/Jan/2024:17:50:36 +0000] \"GET /pyqs/JEE/ HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0\"\n","level":"info"}
