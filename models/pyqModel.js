@@ -58,20 +58,16 @@ const pyqSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    PYQs: [
-        {
-            shift: {
-                type: String,
-                required: true,
-            },
-            year: {
-                type: Number,
-                required: true,
-            },
-            subjects: [subjectSchema],
-        },
-    ],
+    shift: {
+        type: String,
+        required: true,
+    },
+    year: {
+        type: Number,
+        required: true,
+    },
+    subjects: [subjectSchema],
 });
 
 // Create and export the PYQ model
-module.exports = PYQ = mongoose.model("PYQ", pyqSchema, "PYQs");
+module.exports = PYQ = mongoose.model("PYQ", pyqSchema, "PYQ'S");

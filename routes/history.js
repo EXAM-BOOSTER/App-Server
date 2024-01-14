@@ -5,7 +5,7 @@ var authenticate = require('../authenticate');
 const jwt = require('jsonwebtoken');
 const QuizAttempt = require('../models/testHistory');
 const SeriesHistory = require('../models/seriesHistory');
-
+const PyqHistory = require('../models/pyqHistory');
 const Quizes = require("../models/quizes");
 
 const submitRouter = express.Router();
@@ -62,8 +62,7 @@ submitRouter.route('/chapterTest/:subjectName')
 submitRouter.route('/series/testSeries/')
     .post(async (req, res, next) => {
         try {
-            const { token, seriesName, seriesId, selectedAnswer, visited,time } = req.body;
-            // const verified = jwt.verify(token, process.env.JWT_SECRET);
+            const { seriesName, seriesId, selectedAnswer, visited,time } = req.body;            
             const userId = req.session.userId;
 
             const seriesHistory = new SeriesHistory({
@@ -84,7 +83,34 @@ submitRouter.route('/series/testSeries/')
 
     })
 
+submitRouter.route('/pyq/:name/:year/:shift')
+.post(async (req, res) => {
+    const { selectedAnswer, visited, time } = req.body;
+    const userId = req.session.userId;
+    const { name, year, shift } = req.params;
+    try {        
 
+        // Create a new QuizAttempt object
+        const history = new PyqHistory({
+            user: userId,     
+            name: name,       
+            year: year,
+            shift: shift,
+            selectedAnswer: selectedAnswer,
+            visited: visited,
+            time: time
+        });
+
+        await history.save();
+        console.log('PyQ attempt inserted:');
+        res.status(200);
+    }
+    catch (err) {
+        console.log("Failed in Saving", err);
+        res.status(500).json({ msg: "Error in saving history" });
+    }
+
+});
 
 
 

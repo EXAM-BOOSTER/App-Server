@@ -27,7 +27,8 @@ const optionSchema = new Schema({
     },
     type: {
       type: String,
-      required: true
+      required: true,
+      default: "SCQ"
     }
   });
 

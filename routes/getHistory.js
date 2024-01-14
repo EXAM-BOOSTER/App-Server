@@ -6,6 +6,9 @@ const bodyParser = require('body-parser');
 const QuizAttempt = require('../models/testHistory');
 const SeriesHistory = require('../models/seriesHistory');
 const testSeries = require('../models/testSeries');
+const PyQHistory = require('../models/pyqHistory');
+const PYQ = require('../models/pyqModel');
+const User = require('../models/user');
 
 const Quizes = require("../models/quizes");
 
@@ -39,13 +42,14 @@ histRouter.route('/chapHistory')
 
           // Modify the 'question' array to filter out unwanted fields within each question object
           const filteredQuestions = question.map((q) => {
-            const { answer, explanation, question, answers, quesImage } = q;
+            const { answer, explanation, question, answers, quesImage, type } = q;
             return {
               correctAnswer: answer,
               explanation,
               question,
               answers,
-              quesImage
+              quesImage,
+              type
             };
           });
           const subjectData = [{
@@ -67,9 +71,9 @@ histRouter.route('/chapHistory')
           history.push(object);
         });
       }
-      if (seriesTest != null) {        
+      if (seriesTest != null) {
         await Promise.all(seriesTest.map(async (item) => {
-          const test = await testSeries.findOne({name : item.seriesName});          
+          const test = await testSeries.findOne({ name: item.seriesName });
           const testData = await test.testSeries.id(item.testId);
           const {
             selectedAnswer,
@@ -83,18 +87,19 @@ histRouter.route('/chapHistory')
           testData.subjects.map((item) => {
             const subjectName = item.subjectName;
             const filteredQuestions = item.questions.map((q) => {
-              const { correctAnswer, explanation, question, answers,quesImage } = q;
+              const { correctAnswer, explanation, question, answers, quesImage, type } = q;
               return {
                 correctAnswer,
                 explanation,
                 question,
                 answers,
-                quesImage
+                quesImage,
+                type
               };
             });
-            const subdata ={
-              name:subjectName,
-              questions:filteredQuestions
+            const subdata = {
+              name: subjectName,
+              questions: filteredQuestions
             }
             subjectData.push(subdata);
           });
@@ -107,21 +112,91 @@ histRouter.route('/chapHistory')
             subjectData,
             time,
             timestamp,
-          };          
+          };
           history.push(object);
         }));
       }
-        // console.log(history);
+      // console.log(history);
       // Send the filtered data as a response
       res.status(200).json(history);
     }
     catch (err) {
-      console.log('Error in getting history',err);
+      console.log('Error in getting history', err);
       res.status(500).json({ msg: 'An error occurred in fetching history' });
     }
 
   })
 
+histRouter.route('/pyq')
+  .post(async (req, res) => {
+
+    const userId = req.session.userId;
+    try {      
+      const pyqHistory = await PyQHistory.find({ userId: userId });
+
+      if (pyqHistory == null) {
+        return res.status(404);
+      }
+      const history = [];
+      if (pyqHistory != null) {
+        pyqHistory.map(async (item) => {
+          const {
+            name,
+            selectedAnswer,
+            year,
+            shift,
+            timestamp,
+            visited,
+            time
+          } = item;
+          const pyq = await PYQ.findOne({
+            name: name,
+            year: year,
+            shift: shift            
+          });
+          const subjectData = [];
+          pyq.subjects.map((item) => {
+            const subjectName = item.name;
+            const filteredQuestions = item.questions.map((q) => {
+              const { correctAnswer, explanation, question, answers, quesImage, type } = q;
+              return {
+                correctAnswer,
+                explanation,
+                question,
+                answers,
+                quesImage,
+                type
+              };
+            });
+            const subdata = {
+              name: subjectName,
+              questions: filteredQuestions
+            }
+            subjectData.push(subdata);
+          });
+
+          const object = {
+            name,
+            year,
+            shift,
+            selectedAnswer,
+            visited,
+            subjectData,
+            time,
+            timestamp,
+          };
+          history.push(object);
+        });
+      }
+      // console.log(history);
+      // Send the filtered data as a response
+      res.status(200).json(history);
+    }
+    catch (err) {
+      console.log('Error in getting history', err);
+      res.status(500).json({ msg: 'An error occurred in fetching history' });
+    }
+  });
 
 
 module.exports = histRouter;

@@ -1,5 +1,4 @@
 const express = require('express');
-const router = express.Router();
 const bodyParser = require('body-parser');
 
 const pyqRouter = express.Router();
@@ -14,16 +13,16 @@ pyqRouter.route('/:name')
             const name = req.params.name;
 
             // Fetch data from PyQ model using the name
-            const pyq = await PyQ.findOne({ name: name });
-            const latestYear = pyq.PYQs.reduce((latest, item) => {
+            const pyq = await PyQ.find({ name: name });
+            const latestYear = pyq.reduce((latest, item) => {
                 if (item.year > latest) {
                     return item.year;
                 }
                 return latest;
             }, 0);
 
-            const data = pyq.PYQs
-                .filter((item) => item.year === latestYear)
+            const data = pyq.
+                filter((item) => item.year === latestYear)
                 .map((item) => {
                     const { year, shift } = item;
                     return {
@@ -34,8 +33,9 @@ pyqRouter.route('/:name')
 
             res.json(data);
         } catch (error) {
+            console.log(error);
             // Handle any errors that occur during the process
-            res.status(500).json({ error: 'Internal Server Error' });
+            res.status(500).json({ error: 'Internal Server Error,' });
         }
     });
 
@@ -44,8 +44,8 @@ pyqRouter.route('/:name/:year/')
     try{
         const name = req.params.name;
         const year = req.params.year;
-        const pyq = await PyQ.findOne({name: name});
-        const data = pyq.PYQs.filter((item) => item.year == year).map((item) => {
+        const pyq = await PyQ.find({name: name,year: year});
+        const data = pyq.map((item) => {
             const { year, shift } = item;
             return {
                 year,
@@ -64,9 +64,9 @@ pyqRouter.route('/:name/:year/:shift')
         const name = req.params.name;
         const year = req.params.year;
         const shift = req.params.shift;
-        const pyq = await PyQ.findOne({name: name});
-        const data = pyq.PYQs.filter((item) => item.year == year && item.shift == shift);
-        res.json(data[0].subjects);
+        const pyq = await PyQ.findOne({name: name,year: year,shift: shift});
+        // const data = pyq.PYQs.filter((item) => item.year == year && item.shift == shift);
+        res.json(pyq.subjects);
     }catch(error){
         res.status(500).json({ error: 'Internal Server Error' });
     }
