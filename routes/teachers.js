@@ -14,7 +14,7 @@ teacherRouter.route('/make_test')
         try {
             const teacher = await Teacher.findById(req.session.userId);
             console.log(teacher);
-            if(teacher.MOT < 1){
+            if (teacher.MOT < 1) {
                 return res.status(400).json({ message: "You have used all your MOTs" });
             }
             // Array of subjects with chapters and number of questions
@@ -49,16 +49,17 @@ teacherRouter.route('/make_test')
                 // testQuestions.push({ subject: element.subject, selectedQuestions });
             }
             //decrease the MOT from the teacher
-            await Teacher.findByIdAndUpdate(req.session.userId, { $inc: { MOT: -1 } });            
+            const TeacherData = await Teacher.findByIdAndUpdate(req.session.userId, { $inc: { MOT: -1 } }, { new: true });
+            const mot = TeacherData.MOT;
             // Send the test questions as the response
-            res.json(testQuestions);
+            res.json({ "testQuestions": testQuestions, "mot": mot });
         }
         catch (err) {
             console.log(err);
             res.status(500).json({ message: err.message });
         }
     }
-);
+    );
 
 // Helper function to get random questions from a chapter
 // async function getRandomQuestionsFromChapter(subject, chapter, numQuestions) {
@@ -151,21 +152,21 @@ function shuffle(array) {
 }
 
 teacherRouter.route('/mot')
-.get(async (req, res) => {
-    try {
-        const mot = await MOT.find({}); 
-        
-        const data = mot.map(function (item) {
-            return { description: item.description, price: item.price, motNumber: item.motNumber};
-        });
-        res.status(200).json(data);
-    }
-    catch (err) {
-        if(err instanceof NotFoundError)
-            return res.status(400).json({ message: "No MOTs found" });
-        console.log(err);
-        res.status(500).json({ message: err.message });
-    }
-});
+    .get(async (req, res) => {
+        try {
+            const mot = await MOT.find({});
+
+            const data = mot.map(function (item) {
+                return { description: item.description, price: item.price, motNumber: item.motNumber };
+            });
+            res.status(200).json(data);
+        }
+        catch (err) {
+            if (err instanceof NotFoundError)
+                return res.status(400).json({ message: "No MOTs found" });
+            console.log(err);
+            res.status(500).json({ message: err.message });
+        }
+    });
 
 module.exports = teacherRouter;

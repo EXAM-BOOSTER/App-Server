@@ -127,19 +127,19 @@ histRouter.route('/chapHistory')
 
   })
 
-histRouter.route('/pyq')
+histRouter.route('/pyq/:year')
   .post(async (req, res) => {
 
     const userId = req.session.userId;
+    const year = req.params.year;
     try {      
-      const pyqHistory = await PyQHistory.find({ userId: userId });
-
+      const pyqHistory = await PyQHistory.find({ userId: userId, year: year });      
       if (pyqHistory == null) {
         return res.status(404);
       }
       const history = [];
       if (pyqHistory != null) {
-        pyqHistory.map(async (item) => {
+       await Promise.all( pyqHistory.map(async (item) => {
           const {
             name,
             selectedAnswer,
@@ -153,7 +153,7 @@ histRouter.route('/pyq')
             name: name,
             year: year,
             shift: shift            
-          });
+          });          
           const subjectData = [];
           pyq.subjects.map((item) => {
             const subjectName = item.name;
@@ -186,7 +186,7 @@ histRouter.route('/pyq')
             timestamp,
           };
           history.push(object);
-        });
+        }));
       }
       // console.log(history);
       // Send the filtered data as a response

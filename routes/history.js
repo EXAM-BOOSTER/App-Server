@@ -92,7 +92,7 @@ submitRouter.route('/pyq/:name/:year/:shift')
 
         // Create a new QuizAttempt object
         const history = new PyqHistory({
-            user: userId,     
+            userId: userId,     
             name: name,       
             year: year,
             shift: shift,

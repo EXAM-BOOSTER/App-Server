@@ -27,6 +27,7 @@ const config = require("./config");
 const mongoose = require("mongoose");
 const Quizes = require("./models/quizes");
 const user = require("./models/user");
+const Teacher = require("./models/teacherModel");
 
 const DB = config.mongoUrl;
 
@@ -187,8 +188,10 @@ app.get('/checkSession', async (req, res) => {
       const id = req.session.userId;
       const User = await user.findById(id); // Find user by object ID
       if (!User) {
+        const teacher = await Teacher.findById(id);
         res.status(200).json({
           profession: false,
+          mot: teacher.MOT
         }).send();
       }
       else {

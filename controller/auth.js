@@ -84,6 +84,7 @@ exports.teacherSignUp = async (req, res) => {
             'name': savedUser.name,
             'email': savedUser.email,
             'profession': savedUser.profession,
+            'mot': savedUser.MOT,
         });
     } catch (err) {
         console.log("error happened", err);
@@ -107,7 +108,8 @@ exports.teacherLogIn = async (req, res) => {
         return res.json({
           'name': existingTeacher.name,
           'email': existingTeacher.email,
-          'profession': existingTeacher.profession,              
+          'profession': existingTeacher.profession, 
+          'mot': existingTeacher.MOT,             
         });
     } catch (err) {
         console.log('there is error in catch block');

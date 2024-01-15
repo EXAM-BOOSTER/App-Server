@@ -62,7 +62,7 @@ paymentRouter.post('/freeSeries', async (req, res) => {
     const { seriesId } = req.body; // Assuming the payment response is sent in the request body
     const userId = req.session.userId;
     try {
-        const user = await User.findByIdAndUpdate(userId, { $push: { purchasedSeries: seriesId } });               
+        const user = await User.findByIdAndUpdate(userId, { $push: { purchasedSeries: seriesId } },{new: true});               
         // Send a success response back to the Flutter app
         res.status(200).json({ message: 'Payment successful', purchasedSeries: user.purchasedSeries});
     }
@@ -105,7 +105,7 @@ paymentRouter.post('/mot/success', async (req, res) => {
             });
 
             payment.save(); 
-            const user = await Teacher.findByIdAndUpdate(userId, { $inc: { MOT: num } });               
+            const user = await Teacher.findByIdAndUpdate(userId, { $inc: { MOT: num } },{new: true});               
             // Send a success response back to the Flutter app
             res.status(200).json({ message: 'Payment successful', mot: user.MOT});
 
