@@ -4,6 +4,19 @@ const Quizes = require("../models/quizes");
 const katex = require('katex');
 const Teacher = require("../models/teacherModel");
 const MOT = require("../models/motModel");
+const { PDFDocument, StandardFonts, rgb } = require('pdf-lib');
+const mjAPI = require('mathjax-node');
+const fs = require('fs');
+const sharp = require('sharp');
+mjAPI.start();
+mjAPI.config({
+    MathJax: {
+        SVG: {
+            font: 'STIX-Web',
+            linebreaks: { automatic: true },
+        },
+    },
+});
 
 const teacherRouter = express.Router();
 teacherRouter.use(bodyParser.json());
@@ -13,7 +26,6 @@ teacherRouter.route('/make_test')
 
         try {
             const teacher = await Teacher.findById(req.session.userId);
-            console.log(teacher);
             if (teacher.MOT < 1) {
                 return res.status(400).json({ message: "You have used all your MOTs" });
             }
@@ -51,8 +63,145 @@ teacherRouter.route('/make_test')
             //decrease the MOT from the teacher
             const TeacherData = await Teacher.findByIdAndUpdate(req.session.userId, { $inc: { MOT: -1 } }, { new: true });
             const mot = TeacherData.MOT;
-            // Send the test questions as the response
-            res.json({ "testQuestions": testQuestions, "mot": mot });
+
+            const pdfDoc = await PDFDocument.create();
+
+            for (const subject of testQuestions) {
+                const page = pdfDoc.addPage();
+                const { width, height } = page.getSize();
+
+                let yPosition = height - 50;
+
+                const subjectText = subject.subject;
+                const subjectTextWidth = (await pdfDoc.embedFont(StandardFonts.Helvetica)).widthOfTextAtSize(subjectText, 12);
+                const subjectTextX = (width - subjectTextWidth) / 2;
+
+                page.drawText(subjectText, {
+                    x: subjectTextX,
+                    y: yPosition,
+                    font: await pdfDoc.embedFont(StandardFonts.Helvetica),
+                    color: rgb(0, 0, 0),
+                });
+
+                yPosition -= 50;
+                let questionNumber = 1;
+
+                for (const question of subject.selectedQuestions) {
+                    // Add question number and question text
+                    const extractedContent = '\\text{' + question.question.replace(/\$/g, '').trim() + '}';
+                    const svgImage = await renderLatexToImage(extractedContent);
+                    const questionText = `Question ${questionNumber}:`;
+                    page.drawText(questionText, {
+                        x: 50,
+                        y: yPosition,
+                        size: 12,
+                    });
+                    yPosition -= 8;
+
+                    if (svgImage) {
+                        const pngImage = await convertSvgToPng(svgImage);
+                        const image = await pdfDoc.embedPng(pngImage);
+                        const imageDims = image.scale(0.2);
+                        const imageWidth = imageDims.width;
+                        const imageHeight = imageDims.height;
+
+                        page.drawImage(image, {
+                            x: 50,
+                            y: yPosition - imageHeight,
+                            width: imageWidth,
+                            height: imageHeight,
+                        });
+
+                        yPosition -= imageHeight + 20;
+                    }
+
+                    // Add options with prefixes
+                    const options = ['a', 'b', 'c', 'd']; // Modify as needed
+                    for (const [index, option] of question.answers.entries()) {
+                        const replacedOption = '\\text{'+option.option.replace(/\$/g, '').trim()+'}';
+                        const img = await renderLatexToImage(replacedOption);
+                        if (img) {
+                            const pngImg = await convertSvgToPng(img);
+                            const image = await pdfDoc.embedPng(pngImg);
+                            const imageDims = image.scale(0.2);
+                            const imageWidth = imageDims.width;
+                            const imageHeight = imageDims.height;
+
+                            if (yPosition < imageHeight) {
+                                // If it does, adjust the yPosition
+                                yPosition -= 20; // Adjust this value as needed
+                            }
+
+                            page.drawText(`${options[index]}.`, { // Add the letter before the option image
+                                x: 30,
+                                y: yPosition - imageHeight / 4,
+                                size: 12,
+                            });
+
+                            page.drawImage(image, {
+                                x: 50,
+                                y: yPosition - imageHeight / 2,
+                                width: imageWidth,
+                                height: imageHeight,
+                            });
+
+                            yPosition -= imageHeight + 5;
+                        }
+                    }
+                    yPosition -= 20;
+                    questionNumber += 1;
+                }
+            }
+            const page = pdfDoc.addPage();
+            const { width, height } = page.getSize();
+
+            let yPosition = height - 50;
+
+            page.drawText("Correct Answers", {
+                x: width / 2 - 50, // Adjust the x-coordinate to center the text
+                y: yPosition,
+                font: await pdfDoc.embedFont(StandardFonts.HelveticaBold),
+                size: 20,
+                color: rgb(0, 0, 0),
+                anchor: 'center',
+            });
+            yPosition -= 30;
+
+            let j = 1;
+            let xPosition = 50;
+            const lineHeight = 16;
+            const maxLineWidth = 500;
+
+            for (const subject of testQuestions) {
+                for (const question of subject.selectedQuestions) {
+                    const answerIndex = correctAnswerIndex(question);
+                    const answerLetter = String.fromCharCode(answerIndex + 97);
+
+                    page.drawText(`${j} ${answerLetter}`, {
+                        x: xPosition,
+                        y: yPosition,
+                        font: await pdfDoc.embedFont(StandardFonts.Helvetica),
+                        size: 16,
+                        color: rgb(0, 0, 0),
+                    });
+
+                    xPosition += 30; // Adjust the spacing as needed
+
+                    if (xPosition > maxLineWidth) {
+                        xPosition = 50; // Reset xPosition to start a new line
+                        yPosition -= lineHeight;
+                    }
+
+                    j++;
+                }
+            }
+
+            const pdfBytes = await pdfDoc.save();
+
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('X-MOT', mot);
+            res.send(pdfBytes);
+
         }
         catch (err) {
             console.log(err);
@@ -168,5 +317,40 @@ teacherRouter.route('/mot')
             res.status(500).json({ message: err.message });
         }
     });
+
+
+async function renderLatexToImage(latexCode) {
+    return new Promise((resolve, reject) => {
+        mjAPI.typeset({
+            math: latexCode,
+            format: 'TeX',
+            svg: true,
+        }, (data) => {
+            if (!data.errors) {
+                resolve(data.svg);
+            } else {
+                console.error(data.errors);
+                reject('Error rendering LaTeX');
+            }
+        });
+    });
+}
+
+async function convertSvgToPng(svgImage) {
+    return sharp(Buffer.from(svgImage), { density: 300 })
+        .png()
+        .toBuffer();
+}
+
+
+function correctAnswerIndex(que) {
+    for (let i = 0; i < que.answers.length; i++) {
+        if (que.answers[i].option === que.answers[que.correctAnswer - 1].option) {
+            return i;
+        }
+    }
+    return 0;
+}
+
 
 module.exports = teacherRouter;

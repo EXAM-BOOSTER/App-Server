@@ -1,7 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 var authenticate = require('../authenticate');
-const jwt = require('jsonwebtoken');
 const TestSeries = require('../models/testSeries');
 
 

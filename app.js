@@ -17,7 +17,7 @@ const passport = require('passport');
 const mongoStore = require('connect-mongo');
 
 const indexRouter = require("./routes/index");
-const usersRouter = require("./routes/users");
+const usersRouter = require("./routes/users_router");
 const quizRouter = require("./routes/quizRouter");
 const submitRouter = require("./routes/history");
 const histRouter = require("./routes/getHistory");
@@ -98,7 +98,7 @@ connectDB();
 var app = express();
 
 app.enable("trust proxy");
-// ...
+
 app.use(
   session({
     secret: 'sV4T3Qnxjd8',
@@ -188,19 +188,19 @@ app.get('/checkSession', async (req, res) => {
       const id = req.session.userId;
       const User = await user.findById(id); // Find user by object ID
       if (!User) {
-        const teacher = await Teacher.findById(id);
+        const teacher = await Teacher.findById(id);        
         res.status(200).json({
           profession: false,
           mot: teacher.MOT
         }).send();
       }
-      else {
+      else {        
         res.status(200).json({
           // check if user is student then send the student data else send the teacher data 
 
           purchasedSeries: User.purchasedSeries,
           enrolledFor: User.enrolledFor,
-          profession: User.profession,
+          profession: true,
         });
       }
     } else {
@@ -215,8 +215,7 @@ app.use((req, res, next) => {
   if (req.session.userId) {
     next(); // Call the next middleware
   } else {
-    return res.status(401).json("Login again!").send(); // Set status to 401 as Unauthorized and send an empty response
-    // res.redirect('/login'); // Redirect to the login page
+    return res.status(401).json("Login again!").send(); // Set status to 401 as Unauthorized and send an empty response  
   }
 });
 app.use("/quizes", quizRouter);
