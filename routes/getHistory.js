@@ -5,7 +5,6 @@ const SeriesHistory = require('../models/seriesHistory');
 const testSeries = require('../models/testSeries');
 const PyQHistory = require('../models/pyqHistory');
 const PYQ = require('../models/pyqModel');
-const User = require('../models/user');
 
 const Quizes = require("../models/quizes");
 
@@ -35,8 +34,7 @@ histRouter.route('/chapHistory')
             timestamp,
             visited,
             time
-          } = item;
-
+          } = item;          
           // Modify the 'question' array to filter out unwanted fields within each question object
           const filteredQuestions = question.map((q) => {
             const { answer, explanation, question, answers, quesImage, type } = q;
@@ -145,7 +143,7 @@ histRouter.route('/pyq/:year')
             timestamp,
             visited,
             time
-          } = item;
+          } = item;         
           const pyq = await PYQ.findOne({
             name: name,
             year: year,

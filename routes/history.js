@@ -1,7 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-var authenticate = require('../authenticate');
 const QuizAttempt = require('../models/testHistory');
 const SeriesHistory = require('../models/seriesHistory');
 const PyqHistory = require('../models/pyqHistory');
@@ -22,8 +21,7 @@ submitRouter.route('/chapterTest/:subjectName')
         try {
             const quesData = [];
             for (const questionData of questions) {
-                const { question, correctAnswer, answers, explanation,quesImage } = questionData;
-
+                const { question, correctAnswer, answers, explanation,quesImage } = questionData;                
                 const questionObject = {
                     question,
                     answer: correctAnswer,
@@ -43,7 +41,7 @@ submitRouter.route('/chapterTest/:subjectName')
                 question: quesData,
                 selectedAnswer: selectedAnswer,
                 visited: visited,
-                time: time
+                time: time,                
             });
 
             await quizAttempt.save();
