@@ -1,5 +1,5 @@
-const User = require('../models/user');
-const Teacher = require('../models/teacherModel');
+const User = require('../models/user_model');
+const Teacher = require('../models/teacher_model');
 exports.googleSignIn = async (req, res) => {
     try {
         let { name, email} = req.body;

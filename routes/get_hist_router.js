@@ -1,10 +1,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const QuizAttempt = require('../models/testHistory');
-const SeriesHistory = require('../models/seriesHistory');
-const testSeries = require('../models/testSeries');
-const PyQHistory = require('../models/pyqHistory');
-const PYQ = require('../models/pyqModel');
+const QuizAttempt = require('../models/test_history_model');
+const SeriesHistory = require('../models/series_history_model');
+const testSeries = require('../models/test_series_model');
+const PyQHistory = require('../models/pyq_history_model');
+const PYQ = require('../models/pyq_model');
 
 const Quizes = require("../models/quizes");
 
@@ -13,9 +13,7 @@ histRouter.use(bodyParser.json());
 
 
 histRouter.route('/chapHistory')
-  .post(async (req, res) => {
-    // const { token } = req.body;
-    // const verified = jwt.verify(token, process.env.JWT_SECRET);
+  .post(async (req, res) => {    
     const userId = req.session.userId;
     try {
       const data = await QuizAttempt.find({ user: userId });

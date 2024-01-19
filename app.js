@@ -16,70 +16,23 @@ const session = require('express-session');
 const passport = require('passport');
 const mongoStore = require('connect-mongo');
 
-const indexRouter = require("./routes/index");
+const indexRouter = require("./routes/index_router");
 const usersRouter = require("./routes/users_router");
-const quizRouter = require("./routes/quizRouter");
-const submitRouter = require("./routes/history");
-const histRouter = require("./routes/getHistory");
-const seriesRouter = require("./routes/seriesRouter");
+const quizRouter = require("./routes/quiz_router");
+const submitRouter = require("./routes/history_router");
+const histRouter = require("./routes/get_hist_router");
+const seriesRouter = require("./routes/series_router");
 const config = require("./config");
 
 const mongoose = require("mongoose");
 const Quizes = require("./models/quizes");
-const user = require("./models/user");
-const Teacher = require("./models/teacherModel");
+const user = require("./models/user_model");
+const Teacher = require("./models/teacher_model");
 
 const DB = config.mongoUrl;
 
 mongoose.set("autoIndex", true);
 
-//   name: 'Science',
-//   instructions: 'Answer the following questions:',
-//   isEnabled: true,
-//   questions: [
-//     {
-//       question: 'What is the capital of France?',
-//       answers: [
-//         { option: 'Paris' },
-//         { option: 'London' },
-//         { option: 'Delhi' },
-//         { option: 'Madrid' },
-//       ],
-//       answer: 0, // Correct answer is 'Paris'
-//       isEnabled: true,
-//       explanation: 'Paris is the capital of France.',
-//     },
-//     {
-//       question: 'Which planet is known as the Blue Planet?',
-//       answers: [
-//         { option: 'Mars' },
-//         { option: 'Earth' },
-//         { option: 'Jupiter' },
-//         { option: 'Saturn' },
-//       ],
-//       answer: 0, // Correct answer is 'Mars'
-//       isEnabled: true,
-//       explanation: 'Earth is often referred to as the blue Planet due presence of water.',
-//     },
-//     {
-//       question: 'What is the largest mammal on Earth?',
-//       answers: [
-//         { option: 'Elephant' },
-//         { option: 'Giraffe' },
-//         { option: 'Blue Whale' },
-//         { option: 'Lion' },
-//       ],
-//       answer: 2, // Correct answer is 'Blue Whale'
-//       isEnabled: true,
-//       explanation: 'The Blue Whale is the largest mammal on Earth.',
-//     },
-//   ],
-//   duration: {
-//     hours: 0,
-//     minutes: 30,
-//     seconds: 0,
-//   },
-// };
 const connectDB = async () => {
   const con = await mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
@@ -222,10 +175,10 @@ app.use("/quizes", quizRouter);
 app.use("/testSubmit", submitRouter);
 app.use("/history", histRouter);
 app.use("/series", seriesRouter);
-app.use("/payment", require("./routes/payment"));
-app.use("/teachers", require("./routes/teachers"));
-app.use("/notifications", require("./routes/notification"));
-app.use("/pyqs", require("./routes/pyqRouter"));
+app.use("/payment", require("./routes/payment_router"));
+app.use("/teachers", require("./routes/teachers_router"));
+app.use("/notifications", require("./routes/notification_router"));
+app.use("/pyqs", require("./routes/pyq_router"));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

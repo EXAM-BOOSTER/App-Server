@@ -1,8 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-var authenticate = require('../authenticate');
-const TestSeries = require('../models/testSeries');
-
+const TestSeries = require('../models/test_series_model');
+const User = require('../models/user_model');
 
 const seriesRouter = express.Router();
 seriesRouter.use(bodyParser.json());
@@ -10,11 +9,21 @@ seriesRouter.use(bodyParser.json());
 seriesRouter.route('/')
     .get(async (req, res) => {
         try {
-            const series = await TestSeries.find({});
+            const user = await User.findById(req.session.userId);
+            let series = null;
+            if(user.enrolledFor === 'JEE'){                
+                series = await TestSeries.find({isEnabled: true,type: 'PCM'});
+            }
+            else if(user.enrolledFor === 'NEET'){
+                series = await TestSeries.find({isEnabled: true,type: 'PCB'});
+            }
+            else{
+                series = await TestSeries.find({isEnabled: true});
+            }
             if (series == null)
                 return res.status(404).json({ msg: "No Series is Found!" });            
             const data = series.map(function (item) {
-                return { name: item.name, id: item._id , price: item.price, type: item.type};
+                return { name: item.name, id: item._id , price: item.price, type: item.type, about:item.about};
             });
             res.status(200).json(data);
         }

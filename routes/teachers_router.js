@@ -2,8 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const Quizes = require("../models/quizes");
 const katex = require('katex');
-const Teacher = require("../models/teacherModel");
-const MOT = require("../models/motModel");
+const Teacher = require("../models/teacher_model");
+const MOT = require("../models/mot_model");
 const { PDFDocument, StandardFonts, rgb } = require('pdf-lib');
 const mjAPI = require('mathjax-node');
 const fs = require('fs');
@@ -88,7 +88,15 @@ teacherRouter.route('/make_test')
 
                 for (const question of subject.selectedQuestions) {
                     // Add question number and question text
-                    const extractedContent = '\\text{' + question.question.replace(/\$/g, '').trim() + '}';
+                    const extractedContent = question.question.replace(/([^$]*)(\$[^$]*\$)?/g, function(_, text, math) {
+                        if (text.trim() !== '') {
+                          text = '\\text{' + text + '}';
+                        }
+                        if (math) {
+                          math = math.replace(/\$/g, '');
+                        }
+                        return text + (math || '');
+                      });
                     const svgImage = await renderLatexToImage(extractedContent);
                     const questionText = `Question ${questionNumber}:`;
                     page.drawText(questionText, {
@@ -118,7 +126,15 @@ teacherRouter.route('/make_test')
                     // Add options with prefixes
                     const options = ['a', 'b', 'c', 'd']; // Modify as needed
                     for (const [index, option] of question.answers.entries()) {
-                        const replacedOption = '\\text{'+option.option.replace(/\$/g, '').trim()+'}';
+                        const replacedOption = option.option.replace(/([^$]*)(\$[^$]*\$)?/g, function(_, text, math) {
+                            if (text.trim() !== '') {
+                              text = '\\text{' + text + '}';
+                            }
+                            if (math) {
+                              math = math.replace(/\$/g, '');
+                            }
+                            return text + (math || '');
+                          });
                         const img = await renderLatexToImage(replacedOption);
                         if (img) {
                             const pngImg = await convertSvgToPng(img);
@@ -232,8 +248,7 @@ teacherRouter.route('/make_test')
 function selectQuestions(chapters, k, chapterIds) {
     try {
         // Check if valid k value
-        if (k < 1 || k > chapters.length) {
-            console.log(k, chapters.length);
+        if (k < 1 || k > chapters.length) {            
             // throw new Error("Invalid k value");
         }
 

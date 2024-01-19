@@ -42,8 +42,6 @@ const questionSchema = new Schema({
     default: "SCQ"
   }
 
-}, {
-  timestamps: true
 });
 const chapterSchema = new Schema({
   chapter: {

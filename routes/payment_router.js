@@ -3,8 +3,8 @@ const axios = require('axios');
 const express = require('express');
 const paymentRouter = express.Router();
 const bodyParser = require('body-parser');
-const Payment = require('../models/paymentModel');
-const User = require('../models/user');
+const Payment = require('../models/payment_model');
+const User = require('../models/user_model');
 
 // POST /success route
 paymentRouter.use(bodyParser.json());
@@ -42,7 +42,7 @@ paymentRouter.post('/success', async (req, res) => {
             });
 
             payment.save(); 
-            const user = await User.findByIdAndUpdate(userId, { $push: { purchasedSeries: seriesId } });               
+            const user = await User.findByIdAndUpdate(userId, { $push: { purchasedSeries: seriesId } },{new: true});               
             // Send a success response back to the Flutter app
             res.status(200).json({ message: 'Payment successful', purchasedSeries: user.purchasedSeries});
 

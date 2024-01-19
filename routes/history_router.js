@@ -1,10 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
-const QuizAttempt = require('../models/testHistory');
-const SeriesHistory = require('../models/seriesHistory');
-const PyqHistory = require('../models/pyqHistory');
-const Quizes = require("../models/quizes");
+const QuizAttempt = require('../models/test_history_model');
+const SeriesHistory = require('../models/series_history_model');
+const PyqHistory = require('../models/pyq_history_model');
+
 
 const submitRouter = express.Router();
 submitRouter.use(bodyParser.json());
@@ -13,11 +12,9 @@ submitRouter.use(bodyParser.json());
 submitRouter.route('/chapterTest/:subjectName')
     .post(async (req, res) => {
         const subjectName = req.params.subjectName;
-        const { token, chapterName, questions, selectedAnswer, visited, time } = req.body;
-        // const verified = jwt.verify(token, process.env.JWT_SECRET);
+        const { chapterName, questions, selectedAnswer, visited, time } = req.body;       
         const userId = req.session.userId;
-        // console.log(token, userId, chapterId, questions, selectedAnswer, visited, time);
-        // console.log(subjectName, token, questions, selectedAnswer);
+
         try {
             const quesData = [];
             for (const questionData of questions) {
@@ -54,12 +51,12 @@ submitRouter.route('/chapterTest/:subjectName')
 
     });
 
-//saving history of test series
 
 submitRouter.route('/series/testSeries/')
     .post(async (req, res, next) => {
         try {
             const { seriesName, seriesId, selectedAnswer, visited,time } = req.body;            
+        
             const userId = req.session.userId;
 
             const seriesHistory = new SeriesHistory({

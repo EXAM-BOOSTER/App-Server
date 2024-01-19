@@ -57,7 +57,15 @@ const testSeries = new Schema({
     type: {
         type: String,
         required: true,        
-      }, 
+      },
+      about: {
+        type: String,
+        required: true,
+      },  
+      isEnabled: {
+        type: Boolean,
+        default: false
+      },
 
 });
 

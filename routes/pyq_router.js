@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const pyqRouter = express.Router();
 pyqRouter.use(bodyParser.json());
 // Import the PyQ model
-const PyQ = require('../models/pyqModel');
+const PyQ = require('../models/pyq_model');
 
 // Route to fetch data from PyQ model
 pyqRouter.route('/:name')

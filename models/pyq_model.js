@@ -1,8 +1,5 @@
 const mongoose = require("mongoose");
 
-// Define the PYQ schema
-// interface Subjects
-
 const optionSchema = new mongoose.Schema(
     {
         option: {
