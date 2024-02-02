@@ -13,7 +13,6 @@ const compression = require("compression");
 const chalk = require("chalk");
 require("dotenv").config();
 const session = require('express-session');
-const passport = require('passport');
 const mongoStore = require('connect-mongo');
 
 const indexRouter = require("./routes/index_router");
@@ -22,14 +21,16 @@ const quizRouter = require("./routes/quiz_router");
 const submitRouter = require("./routes/history_router");
 const histRouter = require("./routes/get_hist_router");
 const seriesRouter = require("./routes/series_router");
-const config = require("./config");
 
 const mongoose = require("mongoose");
 const Quizes = require("./models/quizes");
 const user = require("./models/user_model");
 const Teacher = require("./models/teacher_model");
+const paymentRouter = require("./routes/payment_router");
+const teacherRouter = require("./routes/teachers_router");
+const notification = require("./routes/notification_router");
+const pyqRouter = require("./routes/pyq_router");
 
-const DB = config.mongoUrl;
 
 mongoose.set("autoIndex", true);
 
@@ -54,7 +55,7 @@ app.enable("trust proxy");
 
 app.use(
   session({
-    secret: 'sV4T3Qnxjd8',
+    secret: process.env.SESSION_SECRET,
     resave: true,
     saveUninitialized: false,
     cookie: {
@@ -65,15 +66,13 @@ app.use(
       secure: false
     },
     store: mongoStore.create({
-      mongoUrl: DB,
+      mongoUrl: process.env.MONGO_URI,
       collection: 'sessions',
       touchAfter: 24 * 60 * 60, // 24 hours in seconds
       autoRemove: 'native',
     })
   })
 );
-app.use(passport.initialize());
-app.use(passport.session());
 
 // Set Body parser, reading data from body into req.body
 app.use(express.json({ limit: "10kb" }));
@@ -88,7 +87,7 @@ app.use(cookieParser("12345-67890"));
 
 // Limit requests from the same API
 const limiter = rateLimit({
-  max: 100,
+  max: 500,
   windowMs: 60 * 60 * 1000,
   message: "Too many requests from this IP, Please try again in an hour!",
 });
@@ -175,10 +174,10 @@ app.use("/quizes", quizRouter);
 app.use("/testSubmit", submitRouter);
 app.use("/history", histRouter);
 app.use("/series", seriesRouter);
-app.use("/payment", require("./routes/payment_router"));
-app.use("/teachers", require("./routes/teachers_router"));
-app.use("/notifications", require("./routes/notification_router"));
-app.use("/pyqs", require("./routes/pyq_router"));
+app.use("/payment", paymentRouter);
+app.use("/teachers", teacherRouter);
+app.use("/notifications", notification);
+app.use("/pyqs", pyqRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
