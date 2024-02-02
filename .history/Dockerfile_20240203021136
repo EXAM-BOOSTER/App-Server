@@ -1,0 +1,1 @@
+FROM public.ecr.aws/lambda/nodejs:20.2024.01.05.14-arm64
