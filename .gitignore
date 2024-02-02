@@ -5,3 +5,4 @@ logs
 .vs
 # Serverless directories
 .serverless
+.env
