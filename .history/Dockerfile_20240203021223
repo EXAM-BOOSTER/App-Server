@@ -1,4 +1,0 @@
-FROM public.ecr.aws/lambda/nodejs:20
-COPY index.js package.json cad/  ${LAMBDA_TASK_ROOT}
-RUN npm install
-
