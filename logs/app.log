@@ -2,3 +2,5 @@
 {"message":"::ffff:192.168.43.186 - - [02/Feb/2024:17:56:41 +0000] \"GET /teachers/mot HTTP/1.1\" 200 133 \"-\" \"Dart/3.2 (dart:io)\"\n","level":"info"}
 {"message":"::ffff:192.168.43.186 - - [02/Feb/2024:17:56:52 +0000] \"GET /quizes/Physics HTTP/1.1\" 200 - \"-\" \"Dart/3.2 (dart:io)\"\n","level":"info"}
 {"message":"::ffff:192.168.43.186 - - [02/Feb/2024:17:56:58 +0000] \"GET /checkSession HTTP/1.1\" 200 29 \"-\" \"Dart/3.2 (dart:io)\"\n","level":"info"}
+{"message":"::ffff:192.168.43.186 - - [02/Feb/2024:18:03:08 +0000] \"GET /quizes/Biology HTTP/1.1\" 200 - \"-\" \"Dart/3.2 (dart:io)\"\n","level":"info"}
+{"message":"::ffff:192.168.43.186 - - [02/Feb/2024:18:03:32 +0000] \"GET /users/logout HTTP/1.1\" 200 - \"-\" \"Dart/3.2 (dart:io)\"\n","level":"info"}
