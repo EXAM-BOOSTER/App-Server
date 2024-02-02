@@ -1,12 +1,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const Quizes = require("../models/quizes");
-const katex = require('katex');
 const Teacher = require("../models/teacher_model");
 const MOT = require("../models/mot_model");
 const { PDFDocument, StandardFonts, rgb } = require('pdf-lib');
 const mjAPI = require('mathjax-node');
-const fs = require('fs');
 const sharp = require('sharp');
 mjAPI.start();
 mjAPI.config({

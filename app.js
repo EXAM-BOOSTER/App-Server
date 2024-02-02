@@ -1,12 +1,10 @@
 const createError = require("http-errors");
 const express = require("express");
-const path = require("path");
 const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
 const winston = require("./winston");
 const rateLimit = require("express-rate-limit");
 const helmet = require("helmet");
-const xss = require("xss-clean");
 const hpp = require("hpp");
 const cors = require("cors");
 const compression = require("compression");
@@ -23,8 +21,6 @@ const histRouter = require("./routes/get_hist_router");
 const seriesRouter = require("./routes/series_router");
 
 const mongoose = require("mongoose");
-const Quizes = require("./models/quizes");
-const user = require("./models/user_model");
 const Teacher = require("./models/teacher_model");
 const paymentRouter = require("./routes/payment_router");
 const teacherRouter = require("./routes/teachers_router");
@@ -92,9 +88,6 @@ const limiter = rateLimit({
   message: "Too many requests from this IP, Please try again in an hour!",
 });
 app.use("/", limiter);
-
-// Data sanitization against XSS
-app.use(xss());
 
 // Prevent http param pollution
 app.use(hpp());
