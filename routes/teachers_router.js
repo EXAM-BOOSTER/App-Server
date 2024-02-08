@@ -25,13 +25,15 @@ teacherRouter.route('/make_test')
         try {
             const teacher = await Teacher.findById(req.session.userId);
             if (teacher.MOT < 1) {
-                return res.status(400).json({ message: "You have used all your MOTs" });
+                return res.status(400).json({ message: "You have used all your MOTs" , suggestion: "Buy more MOTs to continue"});
             }
             // Array of subjects with chapters and number of questions
             let { subjects, numQues } = req.body;
             subjects = JSON.parse(subjects);
             // console.log(subjects, numQues);
-
+            if(subjects.map(subject => subject.chapters.length).reduce((acc, curr) => acc + curr, 0) == 0) {
+                return res.status(400).json({message: 'No Subjects!', suggestion: "Select atleast one Subject." });
+            }
             const questionsPerSubject = Math.floor(numQues / subjects.length);
             // console.log(questionsPerSubject);
             // Generate the test questions

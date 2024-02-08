@@ -16,8 +16,8 @@ histRouter.route('/chapHistory')
   .post(async (req, res) => {    
     const userId = req.session.userId;
     try {
-      const data = await QuizAttempt.find({ user: userId });
-      const seriesTest = await SeriesHistory.find({ userId: userId });
+      const data = await QuizAttempt.find({ user: userId }).sort({ timestamp: -1 });
+      const seriesTest = await SeriesHistory.find({ userId: userId }).sort({ timestamp: -1 });
       if (data == null && seriesTest == null) {
         return res.status(404);
       }
@@ -126,7 +126,7 @@ histRouter.route('/pyq/:year')
     const userId = req.session.userId;
     const year = req.params.year;
     try {      
-      const pyqHistory = await PyQHistory.find({ userId: userId, year: year });      
+      const pyqHistory = await PyQHistory.find({ userId: userId, year: year }).sort({ timestamp: -1 });      
       if (pyqHistory == null) {
         return res.status(404);
       }

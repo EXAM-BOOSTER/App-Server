@@ -41,8 +41,7 @@ submitRouter.route('/chapterTest/:subjectName')
                 time: time,                
             });
 
-            await quizAttempt.save();
-            console.log('Quiz attempt inserted:');
+            await quizAttempt.save();            
             res.status(200);
         }
         catch (err) {
@@ -67,8 +66,7 @@ submitRouter.route('/series/testSeries/')
                 visited: visited,
                 time: time
             });
-            await seriesHistory.save();
-            console.log('Series history inserted:');
+            await seriesHistory.save();            
             res.status(200);
         }
         catch (err) {
@@ -95,8 +93,7 @@ submitRouter.route('/pyq/:name/:year/:shift')
             time: time
         });
 
-        await history.save();
-        console.log('PyQ attempt inserted:');
+        await history.save();        
         res.status(200);
     }
     catch (err) {

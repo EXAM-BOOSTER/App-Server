@@ -29,22 +29,23 @@ paymentRouter.post('/success', async (req, res) => {
 
             const paymentDetails = response.data;
             console.log(paymentDetails);
-
             // Store the payment details in the database
             const payment = new Payment({
+                contactNo: paymentDetails.contact,
                 paymentId,
                 orderId,
                 userId: req.session.userId, // The user ID should come from the session
                 amount: paymentDetails.amount,
                 currency: paymentDetails.currency,
                 status: paymentDetails.status,
+                paymentFor: seriesId,
                 // Add more fields as needed
             });
 
-            payment.save(); 
-            const user = await User.findByIdAndUpdate(userId, { $push: { purchasedSeries: seriesId } },{new: true});               
+            payment.save();
+            const user = await User.findByIdAndUpdate(userId, { $push: { purchasedSeries: seriesId } }, { new: true });
             // Send a success response back to the Flutter app
-            res.status(200).json({ message: 'Payment successful', purchasedSeries: user.purchasedSeries});
+            res.status(200).json({ message: 'Payment successful', purchasedSeries: user.purchasedSeries });
 
         } else {
             // The signature is not valid, return an error response
@@ -62,9 +63,9 @@ paymentRouter.post('/freeSeries', async (req, res) => {
     const { seriesId } = req.body; // Assuming the payment response is sent in the request body
     const userId = req.session.userId;
     try {
-        const user = await User.findByIdAndUpdate(userId, { $push: { purchasedSeries: seriesId } },{new: true});               
+        const user = await User.findByIdAndUpdate(userId, { $push: { purchasedSeries: seriesId } }, { new: true });
         // Send a success response back to the Flutter app
-        res.status(200).json({ message: 'Payment successful', purchasedSeries: user.purchasedSeries});
+        res.status(200).json({ message: 'Payment successful', purchasedSeries: user.purchasedSeries });
     }
     catch (err) {
         console.log(err);
@@ -95,19 +96,21 @@ paymentRouter.post('/mot/success', async (req, res) => {
 
             // Store the payment details in the database
             const payment = new Payment({
+                contactNo: paymentDetails.contact,
                 paymentId,
                 orderId,
                 userId: req.session.userId, // The user ID should come from the session
                 amount: paymentDetails.amount,
                 currency: paymentDetails.currency,
                 status: paymentDetails.status,
+                paymentFor: num,
                 // Add more fields as needed
             });
 
-            payment.save(); 
-            const user = await Teacher.findByIdAndUpdate(userId, { $inc: { MOT: num } },{new: true});               
+            payment.save();
+            const user = await Teacher.findByIdAndUpdate(userId, { $inc: { MOT: num } }, { new: true });
             // Send a success response back to the Flutter app
-            res.status(200).json({ message: 'Payment successful', mot: user.MOT});
+            res.status(200).json({ message: 'Payment successful', mot: user.MOT });
 
         } else {
             // The signature is not valid, return an error response
@@ -120,5 +123,26 @@ paymentRouter.post('/mot/success', async (req, res) => {
     }
 });
 
+paymentRouter.post('/failure', async (req, res) => {
+    const { code, message, error, Id } = req.body;
+    try {
+
+        const payment = new Payment({
+            contactNo: error.contact,
+            paymentId: error.metadata.payment_id,
+            orderId: error.metadata.order_id,
+            userId: req.session.userId,             
+            currency: 'INR',
+            status: message,   
+            paymentFor: Id,         
+        });
+        await payment.save();
+        return res.status(200).json({ message: 'Payment failed' });
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).json({ error: 'Error in processing payment' });
+    }
+});
 
 module.exports = paymentRouter;

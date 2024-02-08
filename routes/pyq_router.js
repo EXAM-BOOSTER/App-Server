@@ -13,7 +13,7 @@ pyqRouter.route('/:name')
             const name = req.params.name;
 
             // Fetch data from PyQ model using the name
-            const pyq = await PyQ.find({ name: name });
+            const pyq = await PyQ.find({ name: name }).sort({ year: -1 });
             const latestYear = pyq.reduce((latest, item) => {
                 if (item.year > latest) {
                     return item.year;
@@ -44,7 +44,7 @@ pyqRouter.route('/:name/:year/')
     try{
         const name = req.params.name;
         const year = req.params.year;
-        const pyq = await PyQ.find({name: name,year: year});
+        const pyq = await PyQ.find({name: name,year: year}).sort({ shift: -1 });
         const data = pyq.map((item) => {
             const { year, shift } = item;
             return {

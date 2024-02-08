@@ -2,6 +2,10 @@
 const mongoose = require('mongoose');
 
 const paymentSchema = new mongoose.Schema({
+  contactNo: {
+    type: String,
+    required: true
+  },
   paymentId: {
     type: String,
     required: true
@@ -11,13 +15,11 @@ const paymentSchema = new mongoose.Schema({
         required: true
     },
   amount: {
-    type: Number,
-    required: true
+    type: Number,    
   },
   currency: {
     type: String,
-    default: 'INR'
-    // required: true
+    default: 'INR'    
   },
   userId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -28,6 +30,10 @@ const paymentSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+  paymentFor: {
+    type: String,
+    required: true
+  },
   createdAt: {
     type: Date,
     default: Date.now

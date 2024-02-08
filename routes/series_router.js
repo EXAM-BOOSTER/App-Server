@@ -12,13 +12,13 @@ seriesRouter.route('/')
             const user = await User.findById(req.session.userId);
             let series = null;
             if(user.enrolledFor === 'JEE'){                
-                series = await TestSeries.find({isEnabled: true,type: 'PCM'});
+                series = await TestSeries.find({isEnabled: true,type: 'PCM'}).sort({_id: -1});
             }
             else if(user.enrolledFor === 'NEET'){
-                series = await TestSeries.find({isEnabled: true,type: 'PCB'});
+                series = await TestSeries.find({isEnabled: true,type: 'PCB'}).sort({_id: -1});
             }
             else{
-                series = await TestSeries.find({isEnabled: true});
+                series = await TestSeries.find({isEnabled: true}).sort({_id: -1});
             }
             if (series == null)
                 return res.status(404).json({ msg: "No Series is Found!" });            
