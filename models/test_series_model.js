@@ -7,13 +7,21 @@ const optionSchema = new Schema({
     option: {
       type: String,
       required: true
-    }
+    },
+    optImage: {
+      type: String,
+      default: "",
+  },
   });
   
   const questionSchema = new Schema({
     question: {
       type: String,
       required: true
+    },
+    quesImage: {
+      type: String,
+      default: ""
     },
     answers: [optionSchema],
   
@@ -25,10 +33,14 @@ const optionSchema = new Schema({
       type: String,
       default: ""
     },
+    explanationImage: {
+      type: String,
+      default: ""
+    },
     type: {
       type: String,
       required: true,
-      default: "SCQ"
+      enum: ['SCQ', 'NUM']
     }
   });
 
@@ -56,7 +68,8 @@ const testSeries = new Schema({
       },
     type: {
         type: String,
-        required: true,        
+        required: true,  
+        enum: ['PCM', 'PCB']      
       },
       about: {
         type: String,

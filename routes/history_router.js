@@ -18,13 +18,14 @@ submitRouter.route('/chapterTest/:subjectName')
         try {
             const quesData = [];
             for (const questionData of questions) {
-                const { question, correctAnswer, answers, explanation,quesImage } = questionData;                
+                const { question, correctAnswer, answers, explanation,quesImage, explanationImage } = questionData;                
                 const questionObject = {
                     question,
                     answer: correctAnswer,
                     answers: answers,
                     explanation,
-                    quesImage
+                    quesImage,
+                    explanationImage
                 };
 
                 quesData.push(questionObject);

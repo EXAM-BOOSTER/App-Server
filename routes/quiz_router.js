@@ -60,15 +60,15 @@ quizRouter.route('/:quizName/:chapterId')
             }            
 
             const questions = chapter.questions.map((question) => ({
-                question: question.question,
-                // id: question._id,
+                question: question.question,                
+                quesImage: question.quesImage,
                 correctAnswer: question.answer,
                 answers: question.answers.map((answer) => ({
                     option: answer.option,
                     optImage: answer.optImage,
                 })),
                 explanation: question.explanation,
-                quesImage: question.quesImage,
+                explanationImage: question.explanationImage,
             }));
 
             res.json(questions);

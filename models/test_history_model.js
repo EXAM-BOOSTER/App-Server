@@ -31,7 +31,11 @@ const optionSchema = new Schema({
     quesImage:{
       type: String,
       default: ""
-    }
+    },
+    explanationImage: {
+      type: String,
+      default: ""
+    },
   });
 
 const quizAttemptSchema = new Schema({

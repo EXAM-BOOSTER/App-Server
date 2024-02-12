@@ -32,10 +32,14 @@ const questionSchema = new mongoose.Schema({
         type: String,
         default: "",
     },
+    explanationImage: {
+        type: String,
+        default: ""
+    },
     type: {
         type: String,
         required: true,
-        default: "SCQ",
+       enum: ['SCQ', 'NUM']
     },
 },{ _id: false });
 

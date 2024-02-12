@@ -80,10 +80,11 @@ histRouter.route('/chapHistory')
           testData.subjects.map((item) => {
             const subjectName = item.subjectName;
             const filteredQuestions = item.questions.map((q) => {
-              const { correctAnswer, explanation, question, answers, quesImage, type } = q;
+              const { correctAnswer, explanation, explanationImage, question, answers, quesImage, type } = q;
               return {
                 correctAnswer,
                 explanation,
+                explanationImage,
                 question,
                 answers,
                 quesImage,

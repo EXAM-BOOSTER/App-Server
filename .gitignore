@@ -3,9 +3,4 @@ node_modules
 jspm_packages
 logs
 .vs
-.history/
-.github/
-.vscode/
-# Serverless directories
-.serverless
 .env

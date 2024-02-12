@@ -36,10 +36,14 @@ const questionSchema = new Schema({
     type: String,
     default: ""
   },
+  explanationImage: {
+    type: String,
+    default: ""
+  },
   type: {
     type: String,
     required: true,
-    default: "SCQ"
+    enum: ['SCQ', 'NUM']
   }
 
 });
