@@ -10,7 +10,7 @@ const adminLogin = async (req, res) => {
 
         // Check if the provided email and password match the fixed values
         if (email === fixedEmail && password === fixedPassword) {
-            req.sesssion.admin = true;            
+            req.session.admin = true;            
             res.status(200).json({ success: true, message: "Login successful" });
         } else {
             res.status(401).json({ success: false, message: "Invalid email or password" });

@@ -926,3 +926,5 @@
 {"message":"::ffff:192.168.43.66 - - [20/Mar/2024:18:42:23 +0000] \"GET /series HTTP/1.1\" 200 505 \"-\" \"Dart/3.2 (dart:io)\"\n","level":"info"}
 {"message":"::ffff:192.168.43.66 - - [20/Mar/2024:18:43:49 +0000] \"GET /notifications HTTP/1.1\" 200 206 \"-\" \"Dart/3.2 (dart:io)\"\n","level":"info"}
 {"message":"::ffff:192.168.43.66 - - [20/Mar/2024:18:44:21 +0000] \"POST /history/chapHistory/ HTTP/1.1\" 200 - \"-\" \"Dart/3.2 (dart:io)\"\n","level":"info"}
+{"message":"::1 - - [28/Mar/2024:16:00:50 +0000] \"GET /admin/login HTTP/1.1\" 401 42 \"-\" \"PostmanRuntime/7.36.3\"\n","level":"info"}
+{"message":"::1 - - [28/Mar/2024:16:01:40 +0000] \"POST /admin/login HTTP/1.1\" 500 23 \"-\" \"PostmanRuntime/7.36.3\"\n","level":"info"}
