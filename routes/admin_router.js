@@ -21,6 +21,13 @@ router.use(bodyParser.json());
 
 router.post('/login', adminLogin);
 
+router.use((req, res, next) => {
+    if (req.session.admin) {
+        next();
+    } else {
+        res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+});
 /* GET Resources */
 router.get('/resources/student', getStudentResources);
 router.get('/resources/teacher', getTeacherResources);
