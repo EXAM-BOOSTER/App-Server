@@ -69,6 +69,7 @@ quizRouter.route('/:quizName/:chapterId')
                 })),
                 explanation: question.explanation,
                 explanationImage: question.explanationImage,
+                type: question.type,
             }));
 
             res.json(questions);

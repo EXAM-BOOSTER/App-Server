@@ -12,6 +12,8 @@ const chalk = require("chalk");
 require("dotenv").config();
 const session = require('express-session');
 const mongoStore = require('connect-mongo');
+const path = require('path');
+const favicon = require('serve-favicon');
 
 const indexRouter = require("./routes/index_router");
 const usersRouter = require("./routes/users_router");
@@ -26,7 +28,8 @@ const paymentRouter = require("./routes/payment_router");
 const teacherRouter = require("./routes/teachers_router");
 const notification = require("./routes/notification_router");
 const pyqRouter = require("./routes/pyq_router");
-
+const resetPassword = require("./routes/reset_pass_router");
+const adminRouter = require("./routes/admin_router");
 
 mongoose.set("autoIndex", true);
 
@@ -47,6 +50,8 @@ connectDB();
 
 var app = express();
 
+app.use(favicon(path.join(__dirname, 'public', 'exam_booster.png')));
+
 app.enable("trust proxy");
 
 app.use(
@@ -57,7 +62,7 @@ app.use(
     cookie: {
       domain: 'localhost:3000',
       path: '/',
-      maxAge: 2 * 24 * 60 * 60 * 1000, // 2 days in milliseconds
+      maxAge: 5 * 24 * 60 * 60 * 1000, // 5 days in milliseconds
       httpOnly: true,
       secure: false
     },
@@ -70,7 +75,7 @@ app.use(
   })
 );
 
-// Set Body parser, reading data from body into req.body
+// Set Body parser, reading data from body into req.body;
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true, limit: "10kb" }));
 
@@ -114,9 +119,14 @@ app.use(compression());
 
 app.disable("x-powered-by");
 
+app.set("view engine", "ejs");
+app.set('views', path.join(__dirname, 'views'));
+app.use('/resources', express.static(path.join(__dirname, 'public')));
 
 // Middleware to check if the user is logged in
 app.use("/", indexRouter);
+app.use('/admin', adminRouter);
+app.use("/reset", resetPassword);
 app.use((req, res, next) => {
   const userAgent = req.headers['user-agent'];
 
@@ -127,6 +137,7 @@ app.use((req, res, next) => {
   }
 });
 app.use("/users", usersRouter);
+
 app.get('/checkSession', async (req, res) => {
   try {
     if (req.session.userId) {

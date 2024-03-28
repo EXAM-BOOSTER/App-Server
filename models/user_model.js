@@ -7,7 +7,9 @@ const userDetails = new Schema({
     password: {type: String,  },
     purchasedSeries: {type: Array, default: [], _id: false},
     enrolledFor: {type: String, default: "", required: true},
-    profession: {type: Boolean, default: true},    
+    profession: {type: Boolean, default: true}, 
+    resetPasswordToken: {type: String},
+    resetPasswordExpires: {type: Date},   
 
 });
 

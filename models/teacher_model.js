@@ -7,6 +7,8 @@ const teacherDetails = new Schema({
     password: {type: String,  },        
     profession: {type: Boolean, default: false},
     MOT: {type: Number, default: 5},
+    resetPasswordToken: {type: String},
+    resetPasswordExpires: {type: Date},
 
 });
 
