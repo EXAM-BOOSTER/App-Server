@@ -20,6 +20,19 @@ const getMOTResources = async (req, res) => {
     }
 }
 
+const putMOTResource = async (req, res) => {
+    try {
+        const { description, price, motNumber } = req.body;
+        const mot = new MOT({ description, price, motNumber });
+        await mot.save();
+        res.status(201).json(mot).send();
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json("Internal Server Error").send();
+    }
+}
+
 const deleteMOTResource = async (req, res) => {
     try {
         const motId = req.params.id;
@@ -36,4 +49,4 @@ const deleteMOTResource = async (req, res) => {
     }
 }
 
-module.exports = { getMOTResources, deleteMOTResource };
+module.exports = { getMOTResources, deleteMOTResource, putMOTResource };

@@ -24,4 +24,20 @@ const getTeacherResources = async (req, res) => {
     }
 }
 
-module.exports = { getTeacherResources };
+const deleteTeacherResource = async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const user = await Teacher.findOne({ _id: userId });
+        if (!user) {
+            return res.status(404).json({ error: 'Teacher not found' });
+        }
+        await Teacher.deleteOne({ _id: userId });
+        res.status(200).json("Teacher deleted successfully").send();
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json("Internal Server Error").send();
+    }
+}
+
+module.exports = { getTeacherResources, deleteTeacherResource};

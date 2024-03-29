@@ -22,6 +22,19 @@ const getNotifications = async (req, res) => {
     }
 }
 
+const putNotification = async (req, res) => {
+    try {
+        const { title, message } = req.body;
+        const notification = new Notification({ title, message });
+        await notification.save();
+        res.status(201).json(notification).send();
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json("Internal Server Error").send();
+    }
+}
+
 const deleteNotification = async (req, res) => {
     try {
         const notificationId = req.params.id;
@@ -39,4 +52,4 @@ const deleteNotification = async (req, res) => {
 }
 
 
-module.exports = { getNotifications, deleteNotification };
+module.exports = { getNotifications, putNotification, deleteNotification };

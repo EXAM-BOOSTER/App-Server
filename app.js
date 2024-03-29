@@ -14,6 +14,7 @@ const session = require('express-session');
 const mongoStore = require('connect-mongo');
 const path = require('path');
 const favicon = require('serve-favicon');
+const bodyParser = require('body-parser');
 
 const indexRouter = require("./routes/index_router");
 const usersRouter = require("./routes/users_router");
@@ -78,6 +79,7 @@ app.use(
 // Set Body parser, reading data from body into req.body;
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true, limit: "10kb" }));
+app.use(bodyParser.json());
 
 // Set security HTTP headers
 app.use(helmet());
