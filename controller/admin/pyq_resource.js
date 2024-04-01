@@ -41,10 +41,21 @@ const getPYQSubject = async (req, res) => {
 
 const putPYQ = async (req, res) => {
     try {
-        const { name, shift, year } = req.body;
+        const {_id, name, shift, year } = req.body;
+        if(!_id){
         const pyq = new PYQ({ name, shift, year }, { _id: 1, name: 1, shift: 1, year: 1 }); 
         await pyq.save();
-        res.status(201).json(pyq).send();
+        return res.status(201).json(pyq).send();
+        }
+        const pyq = await PYQ.findOne({ _id });
+        if (!pyq) {
+            return res.status(404).json({ error: 'PYQ not found' });
+        }
+        pyq.name = name;
+        pyq.shift = shift;
+        pyq.year = year;
+        await pyq.save();
+        res.status(201).json(pyq).send();        
     }
     catch (error) {
         console.error(error);
@@ -55,14 +66,24 @@ const putPYQ = async (req, res) => {
 const putPYQSubject = async (req, res) => {
     try {
         const pyqId = req.params.id;
-        const subject= req.body;
+        const {_id, subject}= req.body;
         const pyq = await PYQ.findOne({ _id: pyqId });
         if (!pyq) {
             return res.status(404).json({ error: 'PYQ not found' });
         }
+        if(!_id){
         pyq.subjects.push(subject);
-        await pyq.save();
-        res.status(201).json(pyq.subjects).send();
+        }
+        else{
+            const sub = pyq.subjects.id(_id);
+            if (!sub) {
+                return res.status(404).json({ error: 'Subject not found' });
+            }
+            sub.name = subject.name;
+            sub.questions = subject.questions;
+        }
+        const data = await pyq.save();
+        res.status(201).json(data.subjects).send();
     }
     catch (error) {
         console.error(error);

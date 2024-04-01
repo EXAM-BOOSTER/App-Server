@@ -68,17 +68,28 @@ const getChaptersSubject = async (req, res) => {
 const putChapters = async (req, res) => {
     try {
         const { subjectId } = req.params;
-        const { chapter, instructions, isEnabled } = req.body;
+        const { _id, chapter, instructions, isEnabled } = req.body;
         const subject = await Quiz.findOne({ _id: subjectId });
         if (!subject) {
             return res.status(404).json({ error: 'Subject not found' });
         }
-        const newChapter = {
-            chapter,
-            instructions,
-            isEnabled
+        if (!_id) {
+            const newChapter = {
+                chapter,
+                instructions,
+                isEnabled
+            }
+            subject.chapter.push(newChapter);
         }
-        subject.chapter.push(newChapter);
+        else {
+            const chap = subject.chapter.id(_id);
+            if (!chap) {
+                return res.status(404).json({ error: 'Chapter not found' });
+            }
+            chap.chapter = chapter;
+            chap.instructions = instructions;
+            chap.isEnabled = isEnabled;
+        }
         await subject.save();
         res.status(200).json({ success: true, message: "Chapter added successfully" });
     }

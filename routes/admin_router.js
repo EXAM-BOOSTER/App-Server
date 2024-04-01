@@ -17,14 +17,16 @@ const { getMOTResources,putMOTResource, deleteMOTResource } = require('../contro
 
 router.post('/login', adminLogin);
 
-// router.use((req, res, next) => {
-//     console.log(req.session)
-//     if (req.session.admin) {
-//         next();
-//     } else {
-//         res.status(401).json({ success: false, message: "Unauthorized" });
-//     }
-// });
+router.use((req, res, next) => {
+    // console.log(req.session)
+    // if (req.session.admin) {
+    //     next();
+    // } else {
+    //     res.status(401).json({ success: false, message: "Unauthorized" });
+    // }
+    res.header('Access-Control-Allow-Origin', 'http://localhost:3001');
+    next();
+});
 /* GET Resources */
 router.get('/resources/student', getStudentResources);
 router.get('/resources/teacher', getTeacherResources);

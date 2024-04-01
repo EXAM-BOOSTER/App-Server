@@ -22,10 +22,21 @@ const getMOTResources = async (req, res) => {
 
 const putMOTResource = async (req, res) => {
     try {
-        const { description, price, motNumber } = req.body;
-        const mot = new MOT({ description, price, motNumber });
-        await mot.save();
-        res.status(201).json(mot).send();
+        const { _id, description, price, motNumber } = req.body;
+        if (!_id) {
+            const mot = new MOT({ description, price, motNumber });
+            await mot.save();
+            res.status(201).json(mot).send();
+        }
+        const mot = await MOT.findOne({ _id });
+        if (!mot) {
+            return res.status(404).json({ error: 'MOT not found' });
+        }
+        mot.description = description;
+        mot.price = price;
+        mot.motNumber = motNumber;
+        const data = await mot.save();
+        res.status(201).json(data).send();        
     }
     catch (error) {
         console.error(error);

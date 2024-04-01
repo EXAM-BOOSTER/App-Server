@@ -24,10 +24,22 @@ const getNotifications = async (req, res) => {
 
 const putNotification = async (req, res) => {
     try {
-        const { title, message } = req.body;
-        const notification = new Notification({ title, message });
-        await notification.save();
-        res.status(201).json(notification).send();
+        const { _id, title, message } = req.body;
+        if (!_id) {
+            const notification = new Notification({ title, message });
+            await notification.save();
+            return res.status(201).json(notification).send();
+        }
+        else {
+            const notification = await Notification.findOne({ _id });
+            if (!notification) {
+                return res.status(404).json({ error: 'Notification not found' });
+            }
+            notification.title = title;
+            notification.message = message;
+            const data = await notification.save();
+            res.status(201).json(data).send();
+        }
     }
     catch (error) {
         console.error(error);

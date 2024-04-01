@@ -17,7 +17,7 @@ const getSeries = async (req, res) => {
             isEnabled: 1,
         };
         const series = await TestSeries.find({}, projection).sort({ _id: -1 }).skip((page - 1) * limit).limit(limit);
-        res.status(200).json(series).send();
+        res.status(200).json(series);
     }
     catch (error) {
         console.error(error);
@@ -67,10 +67,19 @@ const getSeriesSubject = async (req, res) => {
 
 const putSeries = async (req, res) => {
     try {
-        const { name, type, price, isEnabled, about } = req.body;
-        const series = new TestSeries({ name, type, price, isEnabled, about });
-        const test = await series.save();
-        res.status(201).json(test).send();
+        const { _id, name, type, price, isEnabled, about } = req.body;
+        if (!_id) {
+            const series = new TestSeries({ name, type, price, isEnabled, about });
+            await series.save();
+            return res.status(201).json(series).send();
+        }
+        const filter = _id ;
+        const update = { name, type, price, isEnabled, about };
+        const series = await TestSeries.findOneAndUpdate(filter, update, {
+            new: true,
+            upsert: true,
+        });
+        res.status(201).json(series);
     }
     catch (error) {
         console.error(error);
@@ -81,15 +90,27 @@ const putSeries = async (req, res) => {
 const putSeriesTest = async (req, res) => {
     try {
         const { seriesId } = req.params;
-        const { seriesName, isEnabled } = req.body;
+        const {_id, seriesName, isEnabled } = req.body;
         const series = await TestSeries.findOne({ _id: seriesId });
         if (!series) {
             return res.status(404).json({ error: 'Series not found' });
         }
+        if(!_id) {            
         series.testSeries.push({ seriesName, isEnabled });
         const test = series.testSeries[series.testSeries.length - 1]; // Get the newly created test
         await series.save();
         res.status(201).json(test).send(); // Send only the newly created test in the response
+        }
+        else {
+            const test = series.testSeries.id(_id);
+            if (!test) {
+                return res.status(404).json({ error: 'Test not found' });
+            }
+            test.seriesName = seriesName;
+            test.isEnabled = isEnabled;
+            await series.save();
+            res.status(201).json(test).send();
+        }
     }
     catch (error) {
         console.error(error);
@@ -100,7 +121,7 @@ const putSeriesTest = async (req, res) => {
 const putSeriesSubject = async (req, res) => {
     try {
         const { seriesId, testId } = req.params;
-        const subject = req.body;
+        const {_id, subject} = req.body;
         const series = await TestSeries.findOne({ _id: seriesId });
         if (!series) {
             return res.status(404).json({ error: 'Series not found' });
@@ -109,9 +130,19 @@ const putSeriesSubject = async (req, res) => {
         if (!test) {
             return res.status(404).json({ error: 'Test not found' });
         }
+        if(!_id) {
         test.subjects.push(subject);
-        await series.save();
-        res.status(201).json(test).send();
+        }
+        else {
+            const sub = test.subjects.id(_id);
+            if (!sub) {
+                return res.status(404).json({ error: 'Subject not found' });
+            }
+            sub.subjectName = subject.subjectName;
+            sub.questions = subject.questions;
+        }
+        const data = await series.save();
+        res.status(201).json(data).send();
     }
     catch (error) {
         console.error(error);
@@ -159,4 +190,4 @@ const deleteSeriesTest = async (req, res) => {
 }
 
 
-module.exports = { getSeries, getSeriesById, getSeriesSubject, putSeries, putSeriesTest, putSeriesSubject, deleteSeries, deleteSeriesTest};
+module.exports = { getSeries, getSeriesById, getSeriesSubject, putSeries, putSeriesTest, putSeriesSubject, deleteSeries, deleteSeriesTest };
