@@ -1,5 +1,10 @@
 const express = require('express');
 const router = express.Router();
+const multer = require('multer');
+const {
+    S3,
+} = require('@aws-sdk/client-s3');
+const multerS3 = require('multer-s3');
 
 const { adminLogin } = require('../controller/admin/login');
 const { getStudentResources,deleteUserResource } = require('../controller/admin/student_resource');
@@ -45,12 +50,31 @@ router.get('/resources/payment', getPaymentHistory);
 router.get('/resources/notification', getNotifications);
 router.get('/resources/mot', getMOTResources);
 
+const s3 = new S3({ 
+    credentials:{
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+    },
+    region: process.env.AWS_REGION });
+const upload = multer({
+    storage: multerS3({
+      s3: s3,
+      bucket: process.env.AWS_BUCKET_NAME,
+      metadata: function (req, file, cb) {
+        cb(null, {fieldName: file.fieldname});
+      },
+      key: function (req, file, cb) {
+        cb(null, file.originalname)
+      }
+    })
+  });
+
 /* POST Request for Resources Creation */
 router.post('/resources/subjects/:subjectId', putChapters);
 router.post('/resources/subjects/:subjectId/:chapterId', putChaptersQuestions);
 router.post('/resources/series', putSeries);
 router.post('/resources/series/:seriesId', putSeriesTest);
-router.post('/resources/series/:seriesId/:testId', putSeriesSubject);
+router.post('/resources/series/:seriesId/:testId/', upload.any() ,putSeriesSubject);
 router.post('/resources/pyq', putPYQ);
 router.post('/resources/pyq/:id', putPYQSubject);
 router.post('/resources/notification', putNotification);

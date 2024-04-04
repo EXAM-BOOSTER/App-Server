@@ -45,7 +45,7 @@ const optionSchema = new Schema({
   });
 
 const subjectSchema = new Schema({
-    subjectName: {type: String, required: true},
+    subjectName: {type: String, required: true, unique: true},
     questions: [questionSchema]
 })
 

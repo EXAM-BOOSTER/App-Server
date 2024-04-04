@@ -1,6 +1,5 @@
 const TestSeries = require('../../models/test_series_model');
 
-
 const getSeries = async (req, res) => {
     try {
         const limit = 10;
@@ -21,7 +20,7 @@ const getSeries = async (req, res) => {
     }
     catch (error) {
         console.error(error);
-        res.status(500).json("Internal Server Error").send();
+        res.status(500).json("Internal Server Error");
     }
 }
 
@@ -38,11 +37,11 @@ const getSeriesById = async (req, res) => {
             seriesName: test.seriesName,
             isEnabled: test.isEnabled
         }));
-        res.status(200).json(tests).send();
+        res.status(200).json(tests);
     }
     catch (error) {
         console.error(error);
-        res.status(500).json("Internal Server Error").send();
+        res.status(500).json("Internal Server Error");
     }
 }
 
@@ -57,11 +56,11 @@ const getSeriesSubject = async (req, res) => {
         if (!test) {
             return res.status(404).json({ error: 'Test not found' });
         }
-        res.status(200).json(test).send();
+        res.status(200).json(test);
     }
     catch (error) {
         console.error(error);
-        res.status(500).json("Internal Server Error").send();
+        res.status(500).json("Internal Server Error");
     }
 }
 
@@ -71,9 +70,9 @@ const putSeries = async (req, res) => {
         if (!_id) {
             const series = new TestSeries({ name, type, price, isEnabled, about });
             await series.save();
-            return res.status(201).json(series).send();
+            return res.status(201).json(series);
         }
-        const filter = _id ;
+        const filter = _id;
         const update = { name, type, price, isEnabled, about };
         const series = await TestSeries.findOneAndUpdate(filter, update, {
             new: true,
@@ -83,23 +82,23 @@ const putSeries = async (req, res) => {
     }
     catch (error) {
         console.error(error);
-        res.status(500).json("Internal Server Error").send();
+        res.status(500).json("Internal Server Error");
     }
 }
 
 const putSeriesTest = async (req, res) => {
     try {
         const { seriesId } = req.params;
-        const {_id, seriesName, isEnabled } = req.body;
+        const { _id, seriesName, isEnabled } = req.body;
         const series = await TestSeries.findOne({ _id: seriesId });
         if (!series) {
             return res.status(404).json({ error: 'Series not found' });
         }
-        if(!_id) {            
-        series.testSeries.push({ seriesName, isEnabled });
-        const test = series.testSeries[series.testSeries.length - 1]; // Get the newly created test
-        await series.save();
-        res.status(201).json(test).send(); // Send only the newly created test in the response
+        if (!_id) {
+            series.testSeries.push({ seriesName, isEnabled });
+            const test = series.testSeries[series.testSeries.length - 1]; // Get the newly created test
+            await series.save();
+            res.status(201).json(test); // Send only the newly created test in the response
         }
         else {
             const test = series.testSeries.id(_id);
@@ -109,19 +108,41 @@ const putSeriesTest = async (req, res) => {
             test.seriesName = seriesName;
             test.isEnabled = isEnabled;
             await series.save();
-            res.status(201).json(test).send();
+            res.status(201).json(test);
         }
     }
     catch (error) {
         console.error(error);
-        res.status(500).json("Internal Server Error").send();
+        res.status(500).json("Internal Server Error");
     }
 }
 
 const putSeriesSubject = async (req, res) => {
     try {
         const { seriesId, testId } = req.params;
-        const {_id, subject} = req.body;
+        const files = req.files;
+        const { subject, questions } = req.body;
+        if (files && files.length > 0) {
+            for (let file of files) {
+                // Parse the fieldname to get the indices and the key
+                const match = file.fieldname.match(/^questions\[(\d+)\](answers\[(\d+)\])?\[(\w+)\]$/);
+                if (match) {
+                    const questionIndex = parseInt(match[1]);
+                    const answerIndex = match[3] ? parseInt(match[3]) : null;
+                    const key = match[4];
+
+                    // Replace the corresponding field in questions with the file's location
+                    if (questions[questionIndex]) {
+                        if (answerIndex !== null && questions[questionIndex].answers && questions[questionIndex].answers[answerIndex]) {
+                            questions[questionIndex].answers[answerIndex][key] = file.location;
+                        } else {
+                            questions[questionIndex][key] = file.location;
+                        }
+                    }
+                }
+            }
+        }
+
         const series = await TestSeries.findOne({ _id: seriesId });
         if (!series) {
             return res.status(404).json({ error: 'Series not found' });
@@ -130,16 +151,16 @@ const putSeriesSubject = async (req, res) => {
         if (!test) {
             return res.status(404).json({ error: 'Test not found' });
         }
-        if(!_id) {
-        test.subjects.push(subject);
+        if (!questions) {
+            test.subjects.push({ subjectName: subject, questions: [] });
         }
         else {
-            const sub = test.subjects.id(_id);
+            const sub = test.subjects.filter(sub => sub.subjectName === subject)[0];
             if (!sub) {
                 return res.status(404).json({ error: 'Subject not found' });
             }
-            sub.subjectName = subject.subjectName;
-            sub.questions = subject.questions;
+            // sub.subjectName = subject.subjectName;
+            sub.questions = questions;
         }
         const data = await series.save();
         res.status(201).json(data).send();
