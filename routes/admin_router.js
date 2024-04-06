@@ -26,11 +26,11 @@ router.get('/logout', (req, res) => {
     res.json({ success: true, message: "Logged out" });
 });
 
-router.use((req, res, next) => {    
+router.use((req, res, next) => {      
     if (req.session.admin) {
         next();
     } else {
-        res.status(401).json({ success: false, message: "Unauthorized" });
+        res.status(401).json({ success: false, message: "Unauthorized Admin Access" });
     }        
 });
 

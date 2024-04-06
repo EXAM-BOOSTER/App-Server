@@ -70,7 +70,7 @@ app.use(
     store: mongoStore.create({
       mongoUrl: process.env.MONGO_URI,
       collection: 'sessions',
-      touchAfter: 24 * 60 * 60, // 24 hours in seconds
+      touchAfter: 10 * 60 * 60, // 10 hours in seconds
       autoRemove: 'native',
     })
   })
@@ -98,24 +98,10 @@ app.use("/", limiter);
 
 // Prevent http param pollution
 app.use(hpp());
-
-// Implement CORS
-// app.use(cors({
-//   origin: function(origin, callback){
-//     // allow requests with no origin 
-//     // (like mobile apps or curl requests)
-//     if(!origin) return callback(null, true);
-//     if(origin.startsWith('http://localhost:')) {
-//       return callback(null, true);
-//      }// else {
-//     //   return callback(new Error('Not allowed by CORS'));
-//     // }
-//   },
-//   credentials: true,
-//   exposedHeaders: ["Set-Cookie"],
-// }));
-
-// app.options("*", cors());
+app.use(cors({
+  origin: 'http://localhost:3001',
+  credentials: true
+}));
 
 app.use(function (req, res, next) {
   res.header('Access-Control-Allow-Credentials', true);

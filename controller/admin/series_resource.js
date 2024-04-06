@@ -152,8 +152,12 @@ const putSeriesSubject = async (req, res) => {
             return res.status(404).json({ error: 'Test not found' });
         }
         if (!questions) {
-            if(!test.subjects.filter(sub => sub.subjectName === subject)[0]) {
+            const sub = test.subjects.filter(sub => sub.subjectName === subject)[0];
+            if(!sub) {
             test.subjects.push({ subjectName: subject, questions: [] });
+            }else{
+                return res.status(200).json({ message: 'Subject already exists' });
+            
             }
         }
         else {
