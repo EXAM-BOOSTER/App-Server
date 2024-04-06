@@ -22,16 +22,13 @@ const { getMOTResources,putMOTResource, deleteMOTResource } = require('../contro
 
 router.post('/login', adminLogin);
 
-router.use((req, res, next) => {
-    // console.log(req.session)
-    // if (req.session.admin) {
-    //     next();
-    // } else {
-    //     res.status(401).json({ success: false, message: "Unauthorized" });
-    // }
-    res.header('Access-Control-Allow-Origin', 'http://localhost:3001');
-    next();
-});
+// router.use((req, res, next) => {    
+//     if (req.session.admin) {
+//         next();
+//     } else {
+//         res.status(401).json({ success: false, message: "Unauthorized" });
+//     }        
+// });
 /* GET Resources */
 router.get('/resources/student', getStudentResources);
 router.get('/resources/teacher', getTeacherResources);
@@ -76,7 +73,7 @@ router.post('/resources/series', putSeries);
 router.post('/resources/series/:seriesId', putSeriesTest);
 router.post('/resources/series/:seriesId/:testId/', upload.any() ,putSeriesSubject);
 router.post('/resources/pyq', putPYQ);
-router.post('/resources/pyq/:id', putPYQSubject);
+router.post('/resources/pyq/:id', upload.any(), putPYQSubject);
 router.post('/resources/notification', putNotification);
 router.post('/resources/mot', putMOTResource);
 

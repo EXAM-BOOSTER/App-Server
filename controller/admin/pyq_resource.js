@@ -41,11 +41,11 @@ const getPYQSubject = async (req, res) => {
 
 const putPYQ = async (req, res) => {
     try {
-        const {_id, name, shift, year } = req.body;
-        if(!_id){
-        const pyq = new PYQ({ name, shift, year }, { _id: 1, name: 1, shift: 1, year: 1 }); 
-        await pyq.save();
-        return res.status(201).json(pyq);
+        const { _id, name, shift, year } = req.body;
+        if (!_id) {
+            const pyq = new PYQ({ name, shift, year }, { _id: 1, name: 1, shift: 1, year: 1 });
+            await pyq.save();
+            return res.status(201).json(pyq);
         }
         const pyq = await PYQ.findOne({ _id });
         if (!pyq) {
@@ -55,7 +55,7 @@ const putPYQ = async (req, res) => {
         pyq.shift = shift;
         pyq.year = year;
         await pyq.save();
-        res.status(201).json(pyq);        
+        res.status(201).json(pyq);
     }
     catch (error) {
         console.error(error);
@@ -66,22 +66,41 @@ const putPYQ = async (req, res) => {
 const putPYQSubject = async (req, res) => {
     try {
         const pyqId = req.params.id;
-        const {_id, subject}= req.body;
+        const files = req.files;
+        const { name, questions } = req.body;
+        if (files && files.length > 0) {
+            for (let file of files) {
+                // Parse the fieldname to get the indices and the key
+                const match = file.fieldname.match(/^questions\[(\d+)\](answers\[(\d+)\])?\[(\w+)\]$/);
+                if (match) {
+                    const questionIndex = parseInt(match[1]);
+                    const answerIndex = match[3] ? parseInt(match[3]) : null;
+                    const key = match[4];
+
+                    // Replace the corresponding field in questions with the file's location
+                    if (questions[questionIndex]) {
+                        if (answerIndex !== null && questions[questionIndex].answers && questions[questionIndex].answers[answerIndex]) {
+                            questions[questionIndex].answers[answerIndex][key] = file.location;
+                        } else {
+                            questions[questionIndex][key] = file.location;
+                        }
+                    }
+                }
+            }
+        }
         const pyq = await PYQ.findOne({ _id: pyqId });
         if (!pyq) {
             return res.status(404).json({ error: 'PYQ not found' });
         }
-        if(!_id){
-        pyq.subjects.push(subject);
+        const sub = pyq.subjects.filter(sub => sub.name === name)[0];
+        if (!sub) {
+            pyq.subjects.push({ name, questions });
         }
-        else{
-            const sub = pyq.subjects.id(_id);
-            if (!sub) {
-                return res.status(404).json({ error: 'Subject not found' });
-            }
+        else {
             sub.name = subject.name;
             sub.questions = subject.questions;
         }
+
         const data = await pyq.save();
         res.status(201).json(data.subjects);
     }

@@ -61,7 +61,7 @@ app.use(
     resave: true,
     saveUninitialized: false,
     cookie: {
-      domain: 'localhost:3000',
+      domain: 'localhost',
       path: '/',
       maxAge: 5 * 24 * 60 * 60 * 1000, // 5 days in milliseconds
       httpOnly: true,
@@ -154,13 +154,13 @@ app.get('/checkSession', async (req, res) => {
       const id = req.session.userId;
       const User = await user.findById(id); // Find user by object ID
       if (!User) {
-        const teacher = await Teacher.findById(id);        
+        const teacher = await Teacher.findById(id);
         res.status(200).json({
           profession: false,
           mot: teacher.MOT
         }).send();
       }
-      else {        
+      else {
         res.status(200).json({
           // check if user is student then send the student data else send the teacher data 
 
@@ -170,7 +170,7 @@ app.get('/checkSession', async (req, res) => {
         });
       }
     } else {
-      res.status(401).json({msg:"Not logged in!"}).send();
+      res.status(401).json({ msg: "Not logged in!" }).send();
     }
   } catch (error) {
     console.error(error);
