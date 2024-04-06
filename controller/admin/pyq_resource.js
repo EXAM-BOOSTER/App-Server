@@ -96,9 +96,9 @@ const putPYQSubject = async (req, res) => {
         if (!sub) {
             pyq.subjects.push({ name, questions });
         }
-        else {
-            sub.name = subject.name;
-            sub.questions = subject.questions;
+        else if(questions && questions.length > 0) {
+            sub.name = name;
+            sub.questions = questions;
         }
 
         const data = await pyq.save();

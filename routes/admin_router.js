@@ -21,6 +21,10 @@ const { getMOTResources,putMOTResource, deleteMOTResource } = require('../contro
 
 
 router.post('/login', adminLogin);
+router.get('/logout', (req, res) => {
+    req.session.destroy();
+    res.json({ success: true, message: "Logged out" });
+});
 
 // router.use((req, res, next) => {    
 //     if (req.session.admin) {
@@ -29,6 +33,7 @@ router.post('/login', adminLogin);
 //         res.status(401).json({ success: false, message: "Unauthorized" });
 //     }        
 // });
+
 /* GET Resources */
 router.get('/resources/student', getStudentResources);
 router.get('/resources/teacher', getTeacherResources);
