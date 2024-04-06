@@ -26,13 +26,13 @@ router.get('/logout', (req, res) => {
     res.json({ success: true, message: "Logged out" });
 });
 
-// router.use((req, res, next) => {    
-//     if (req.session.admin) {
-//         next();
-//     } else {
-//         res.status(401).json({ success: false, message: "Unauthorized" });
-//     }        
-// });
+router.use((req, res, next) => {    
+    if (req.session.admin) {
+        next();
+    } else {
+        res.status(401).json({ success: false, message: "Unauthorized" });
+    }        
+});
 
 /* GET Resources */
 router.get('/resources/student', getStudentResources);
@@ -62,7 +62,7 @@ const upload = multer({
     storage: multerS3({
       s3: s3,
       bucket: process.env.AWS_BUCKET_NAME,
-      metadata: function (req, file, cb) {
+      metadata: function (req, file, cb) {        
         cb(null, {fieldName: file.fieldname});
       },
       key: function (req, file, cb) {
