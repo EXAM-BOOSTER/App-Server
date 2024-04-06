@@ -21,11 +21,11 @@ const getPaymentHistory = async (req, res) => {
             createdAt: 1
         };
         const history = await PaymentHistory.find({}, projection).sort({ _id: -1 }).skip((page - 1) * limit).limit(limit);
-        res.status(200).json(history).send();
+        res.status(200).json(history);
     }
     catch (error) {
         console.error(error);
-        res.status(500).json("Internal Server Error").send();
+        res.status(500).json("Internal Server Error");
     }
 }
 
@@ -37,11 +37,11 @@ const deletePaymentHistory = async (req, res) => {
             return res.status(404).json({ error: 'History not found' });
         }
         await PaymentHistory.deleteOne({ _id: historyId });
-        res.status(200).json("History deleted successfully").send();
+        res.status(200).json("History deleted successfully");
     }
     catch (error) {
         console.error(error);
-        res.status(500).json("Internal Server Error").send();
+        res.status(500).json("Internal Server Error");
     }
 }
 

@@ -163,11 +163,11 @@ const putSeriesSubject = async (req, res) => {
             sub.questions = questions;
         }
         const data = await series.save();
-        res.status(201).json(data).send();
+        res.status(201).json(data);
     }
     catch (error) {
         console.error(error);
-        res.status(500).json("Internal Server Error").send();
+        res.status(500).json("Internal Server Error");
     }
 }
 
@@ -180,11 +180,11 @@ const deleteSeries = async (req, res) => {
             return res.status(404).json({ error: 'Series not found' });
         }
         await TestSeries.deleteOne({ _id: seriesId });
-        res.status(200).json("Series deleted successfully").send();
+        res.status(200).json("Series deleted successfully");
     }
     catch (error) {
         console.error(error);
-        res.status(500).json("Internal Server Error").send();
+        res.status(500).json("Internal Server Error");
     }
 }
 
@@ -202,11 +202,11 @@ const deleteSeriesTest = async (req, res) => {
         }
         test.remove();
         await series.save();
-        res.status(200).json("Test deleted successfully").send();
+        res.status(200).json("Test deleted successfully");
     }
     catch (error) {
         console.error(error);
-        res.status(500).json("Internal Server Error").send();
+        res.status(500).json("Internal Server Error");
     }
 }
 

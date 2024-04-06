@@ -12,11 +12,11 @@ const getMOTResources = async (req, res) => {
             motNumber: 1,
         };
         const user = await MOT.find({}, projection).sort({ _id: -1 }).skip((page - 1) * limit).limit(limit);
-        res.status(200).json(user).send();
+        res.status(200).json(user);
     }
     catch (error) {
         console.error(error);
-        res.status(500).json("Internal Server Error").send();
+        res.status(500).json("Internal Server Error");
     }
 }
 
@@ -26,7 +26,7 @@ const putMOTResource = async (req, res) => {
         if (!_id) {
             const mot = new MOT({ description, price, motNumber });
             await mot.save();
-            res.status(201).json(mot).send();
+            res.status(201).json(mot);
         }
         const mot = await MOT.findOne({ _id });
         if (!mot) {
@@ -36,11 +36,11 @@ const putMOTResource = async (req, res) => {
         mot.price = price;
         mot.motNumber = motNumber;
         const data = await mot.save();
-        res.status(201).json(data).send();        
+        res.status(201).json(data);        
     }
     catch (error) {
         console.error(error);
-        res.status(500).json("Internal Server Error").send();
+        res.status(500).json("Internal Server Error");
     }
 }
 
@@ -52,11 +52,11 @@ const deleteMOTResource = async (req, res) => {
             return res.status(404).json({ error: 'MOT not found' });
         }
         await MOT.deleteOne({ _id: motId });
-        res.status(200).json("MOT deleted successfully").send();
+        res.status(200).json("MOT deleted successfully");
     }
     catch (error) {
         console.error(error);
-        res.status(500).json("Internal Server Error").send();
+        res.status(500).json("Internal Server Error");
     }
 }
 

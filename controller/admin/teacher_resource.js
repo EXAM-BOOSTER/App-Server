@@ -16,11 +16,11 @@ const getTeacherResources = async (req, res) => {
             MOT: 1,
         };
         const user = await Teacher.find({}, projection).sort({ _id: -1 }).skip((page - 1) * limit).limit(limit);
-        res.status(200).json(user).send();
+        res.status(200).json(user);
     }
     catch (error) {
         console.error(error);
-        res.status(500).json("Internal Server Error").send();
+        res.status(500).json("Internal Server Error");
     }
 }
 
@@ -32,11 +32,11 @@ const deleteTeacherResource = async (req, res) => {
             return res.status(404).json({ error: 'Teacher not found' });
         }
         await Teacher.deleteOne({ _id: userId });
-        res.status(200).json("Teacher deleted successfully").send();
+        res.status(200).json("Teacher deleted successfully");
     }
     catch (error) {
         console.error(error);
-        res.status(500).json("Internal Server Error").send();
+        res.status(500).json("Internal Server Error");
     }
 }
 

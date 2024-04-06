@@ -9,11 +9,11 @@ const getSubjects = async (req, res) => {
             name: 1
         };
         const subjects = await Quiz.find({}, projection);
-        res.status(200).json(subjects).send();
+        res.status(200).json(subjects);
     }
     catch (error) {
         console.error(error);
-        res.status(500).json("Internal Server Error").send();
+        res.status(500).json("Internal Server Error");
     }
 }
 
@@ -37,11 +37,11 @@ const getChapters = async (req, res) => {
             isEnabled: chapter.isEnabled
         }));
 
-        res.status(200).json(chapter).send();
+        res.status(200).json(chapter);
     }
     catch (error) {
         console.error(error);
-        res.status(500).json("Internal Server Error").send();
+        res.status(500).json("Internal Server Error");
     }
 }
 
@@ -56,11 +56,11 @@ const getChaptersSubject = async (req, res) => {
         if (!chapter) {
             return res.status(404).json({ error: 'Chapter not found' });
         }
-        res.status(200).json(chapter).send();
+        res.status(200).json(chapter);
     }
     catch (error) {
         console.error(error);
-        res.status(500).json("Internal Server Error").send();
+        res.status(500).json("Internal Server Error");
     }
 }
 
@@ -95,14 +95,35 @@ const putChapters = async (req, res) => {
     }
     catch (error) {
         console.error(error);
-        res.status(500).json("Internal Server Error").send();
+        res.status(500).json("Internal Server Error");
     }
 }
 
 const putChaptersQuestions = async (req, res) => {
     try {
         const { subjectId, chapterId } = req.params;
-        const questions = req.body;
+        const files = req.files;
+        const { questions } = req.body;
+        if (files && files.length > 0) {
+            for (let file of files) {
+                // Parse the fieldname to get the indices and the key
+                const match = file.fieldname.match(/^questions\[(\d+)\](answers\[(\d+)\])?\[(\w+)\]$/);
+                if (match) {
+                    const questionIndex = parseInt(match[1]);
+                    const answerIndex = match[3] ? parseInt(match[3]) : null;
+                    const key = match[4];
+
+                    // Replace the corresponding field in questions with the file's location
+                    if (questions[questionIndex]) {
+                        if (answerIndex !== null && questions[questionIndex].answers && questions[questionIndex].answers[answerIndex]) {
+                            questions[questionIndex].answers[answerIndex][key] = file.location;
+                        } else {
+                            questions[questionIndex][key] = file.location;
+                        }
+                    }
+                }
+            }
+        }
         const subject = await Quiz.findOne({ _id: subjectId });
         if (!subject) {
             return res.status(404).json({ error: 'Subject not found' });
@@ -113,11 +134,11 @@ const putChaptersQuestions = async (req, res) => {
         }
         chapter.set('questions', questions); // Update the questions field of the chapter object
         await subject.save(); // Save the changes to the subject
-        res.status(201).json(subject).send();
+        res.status(201).json(subject);
     }
     catch (error) {
         console.error(error);
-        res.status(500).json("Internal Server Error").send();
+        res.status(500).json("Internal Server Error");
     }
 }
 
@@ -135,11 +156,11 @@ const deleteChapter = async (req, res) => {
         }
         await chapter.remove();
         await subject.save();
-        res.status(200).json("Chapter deleted successfully").send();
+        res.status(200).json("Chapter deleted successfully");
     }
     catch (error) {
         console.error(error);
-        res.status(500).json("Internal Server Error").send();
+        res.status(500).json("Internal Server Error");
     }
 }
 

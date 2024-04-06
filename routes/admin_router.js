@@ -71,7 +71,7 @@ const upload = multer({
 
 /* POST Request for Resources Creation */
 router.post('/resources/subjects/:subjectId', putChapters);
-router.post('/resources/subjects/:subjectId/:chapterId', putChaptersQuestions);
+router.post('/resources/subjects/:subjectId/:chapterId',upload.any(), putChaptersQuestions);
 router.post('/resources/series', putSeries);
 router.post('/resources/series/:seriesId', putSeriesTest);
 router.post('/resources/series/:seriesId/:testId/', upload.any() ,putSeriesSubject);

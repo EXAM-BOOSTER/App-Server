@@ -15,11 +15,11 @@ const getPYQ = async (req, res) => {
             year: 1,
         };
         const pyq = await PYQ.find({}, projection).sort({ _id: -1 }).skip((page - 1) * limit).limit(limit);
-        res.status(200).json(pyq).send();
+        res.status(200).json(pyq);
     }
     catch (error) {
         console.error(error);
-        res.status(500).json("Internal Server Error").send();
+        res.status(500).json("Internal Server Error");
     }
 }
 
@@ -31,11 +31,11 @@ const getPYQSubject = async (req, res) => {
         if (!series) {
             return res.status(404).json({ error: 'Series not found' });
         }
-        res.status(200).json(series).send();
+        res.status(200).json(series);
     }
     catch (error) {
         console.error(error);
-        res.status(500).json("Internal Server Error").send();
+        res.status(500).json("Internal Server Error");
     }
 }
 
@@ -45,7 +45,7 @@ const putPYQ = async (req, res) => {
         if(!_id){
         const pyq = new PYQ({ name, shift, year }, { _id: 1, name: 1, shift: 1, year: 1 }); 
         await pyq.save();
-        return res.status(201).json(pyq).send();
+        return res.status(201).json(pyq);
         }
         const pyq = await PYQ.findOne({ _id });
         if (!pyq) {
@@ -55,11 +55,11 @@ const putPYQ = async (req, res) => {
         pyq.shift = shift;
         pyq.year = year;
         await pyq.save();
-        res.status(201).json(pyq).send();        
+        res.status(201).json(pyq);        
     }
     catch (error) {
         console.error(error);
-        res.status(500).json("Internal Server Error").send();
+        res.status(500).json("Internal Server Error");
     }
 }
 
@@ -83,11 +83,11 @@ const putPYQSubject = async (req, res) => {
             sub.questions = subject.questions;
         }
         const data = await pyq.save();
-        res.status(201).json(data.subjects).send();
+        res.status(201).json(data.subjects);
     }
     catch (error) {
         console.error(error);
-        res.status(500).json("Internal Server Error").send();
+        res.status(500).json("Internal Server Error");
     }
 }
 
@@ -103,7 +103,7 @@ const deletePYQ = async (req, res) => {
     }
     catch (error) {
         console.error(error);
-        res.status(500).json("Internal Server Error").send();
+        res.status(500).json("Internal Server Error");
     }
 }
 

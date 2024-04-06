@@ -18,11 +18,11 @@ const getStudentResources = async (req, res) => {
 
         };
         const user = await User.find({}, projection).sort({_id:-1}).skip((page - 1) * limit).limit(limit);
-        res.status(200).json(user).send();
+        res.status(200).json(user);
     }
     catch (error) {
         console.error(error);
-        res.status(500).json("Internal Server Error").send();
+        res.status(500).json("Internal Server Error");
     }
 }
 
@@ -34,11 +34,11 @@ const deleteUserResource = async (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
         await User.deleteOne({ _id: userId });
-        res.status(200).json("User deleted successfully").send();
+        res.status(200).json("User deleted successfully");
     }
     catch (error) {
         console.error(error);
-        res.status(500).json("Internal Server Error").send();
+        res.status(500).json("Internal Server Error");
     }
 }
 

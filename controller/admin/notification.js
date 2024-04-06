@@ -14,11 +14,11 @@ const getNotifications = async (req, res) => {
             createdAt: 1
         };
         const notifications = await Notification.find({}, projection).sort({ _id: -1 }).skip((page - 1) * limit).limit(limit);
-        res.status(200).json(notifications).send();
+        res.status(200).json(notifications);
     }
     catch (error) {
         console.error(error);
-        res.status(500).json("Internal Server Error").send();
+        res.status(500).json("Internal Server Error");
     }
 }
 
@@ -28,7 +28,7 @@ const putNotification = async (req, res) => {
         if (!_id) {
             const notification = new Notification({ title, message });
             await notification.save();
-            return res.status(201).json(notification).send();
+            return res.status(201).json(notification);
         }
         else {
             const notification = await Notification.findOne({ _id });
@@ -38,12 +38,12 @@ const putNotification = async (req, res) => {
             notification.title = title;
             notification.message = message;
             const data = await notification.save();
-            res.status(201).json(data).send();
+            res.status(201).json(data);
         }
     }
     catch (error) {
         console.error(error);
-        res.status(500).json("Internal Server Error").send();
+        res.status(500).json("Internal Server Error");
     }
 }
 
@@ -55,11 +55,11 @@ const deleteNotification = async (req, res) => {
             return res.status(404).json({ error: 'Notification not found' });
         }
         await Notification.deleteOne({ _id: notificationId });
-        res.status(200).json("Notification deleted successfully").send();
+        res.status(200).json("Notification deleted successfully");
     }
     catch (error) {
         console.error(error);
-        res.status(500).json("Internal Server Error").send();
+        res.status(500).json("Internal Server Error");
     }
 }
 
