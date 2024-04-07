@@ -26,9 +26,14 @@ const getSeries = async (req, res) => {
 
 const getSeriesById = async (req, res) => {
     try {
+        const limit = 10;
+        let page = req.query.page;
+        if (!page || page < 1) {
+            page = 1;
+        }
         const seriesId = req.params.id;
         const projection = { testSeries: 1 };
-        const series = await TestSeries.findOne({ _id: seriesId }, projection);
+        const series = await TestSeries.findOne({ _id: seriesId }, projection).sort({ _id: -1 }).skip((page - 1) * limit).limit(limit);
         if (!series) {
             return res.status(404).json({ error: 'Series not found' });
         }

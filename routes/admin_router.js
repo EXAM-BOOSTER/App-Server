@@ -27,11 +27,7 @@ router.get('/logout', (req, res) => {
 });
 
 router.use((req, res, next) => {      
-    if (req.session.admin) {
-        next();
-    } else {
-        res.status(401).json({ success: false, message: "Unauthorized Admin Access" });
-    }        
+  res.header('Access-Control-Allow-Origin', 'https://admin-panel-new-nine.vercel.app');       
 });
 
 /* GET Resources */

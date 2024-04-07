@@ -53,7 +53,7 @@ var app = express();
 
 app.use(favicon(path.join(__dirname, 'public', 'exam_booster.png')));
 
-app.enable("trust proxy");
+app.set("trust proxy",1);
 
 app.use(
   session({
@@ -65,13 +65,14 @@ app.use(
       path: '/',
       maxAge: 5 * 24 * 60 * 60 * 1000, // 5 days in milliseconds
       httpOnly: true,
-      secure: false
+      // secure: false,
+      // sameSite: 'none'
     },
     store: mongoStore.create({
       mongoUrl: process.env.MONGO_URI,
       collection: 'sessions',
       touchAfter: 10 * 60 * 60, // 10 hours in seconds
-      autoRemove: 'native',
+      autoRemove: 'native',      
     })
   })
 );
@@ -98,14 +99,14 @@ app.use("/", limiter);
 
 // Prevent http param pollution
 app.use(hpp());
-app.use(cors({
-  origin: 'http://localhost:3001',
-  credentials: true
-}));
+// app.use(cors({
+//   origin: 'http://localhost:3001',
+//   credentials: true,
+//   exposedHeaders: ['set-cookie']
+// }));
 
 app.use(function (req, res, next) {
-  res.header('Access-Control-Allow-Credentials', true);
-  res.header('Access-Control-Allow-Origin', 'http://localhost:3001');
+  res.header('Access-Control-Allow-Credentials', true);  
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,UPDATE,OPTIONS');
   res.header('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept');
   next();

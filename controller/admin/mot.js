@@ -5,6 +5,9 @@ const getMOTResources = async (req, res) => {
     try {
         const limit = 10;
         let page = req.query.page;
+        if (!page || page < 1) {
+            page = 1;
+        }
         const projection = {
             _id: 1,
             description: 1,

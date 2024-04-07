@@ -20,13 +20,13 @@ const getSubjects = async (req, res) => {
 const getChapters = async (req, res) => {
     try {
         const { subjectId } = req.params;
-        const projection = {
-            _id: 1,
-            chapter: 1,
-            instructions: 1,
-            isEnabled: 1
+        const limit = 10;
+        let page = req.query.page;
+        if (!page || page < 1) {
+            page = 1;
         }
-        const subjects = await Quiz.findOne({ _id: subjectId }, { chapter: 1 });
+
+        const subjects = await Quiz.findOne({ _id: subjectId }, { chapter: 1 }).sort({ _id: -1 }).skip((page - 1) * limit).limit(limit);
         if (!subjects) {
             return res.status(404).json({ error: 'Subject not found' });
         }
