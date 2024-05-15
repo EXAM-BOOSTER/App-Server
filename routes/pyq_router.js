@@ -24,8 +24,9 @@ pyqRouter.route('/:name')
             const data = pyq.
                 filter((item) => item.year === latestYear)
                 .map((item) => {
-                    const { year, shift } = item;
+                    const {_id, year, shift } = item;
                     return {
+                        id: _id,
                         year,
                         shift
                     };
@@ -46,8 +47,9 @@ pyqRouter.route('/:name/:year/')
         const year = req.params.year;
         const pyq = await PyQ.find({name: name,year: year}).sort({ shift: -1 });
         const data = pyq.map((item) => {
-            const { year, shift } = item;
+            const { _id, year, shift } = item;
             return {
+                id: _id,
                 year,
                 shift
             };
@@ -58,13 +60,13 @@ pyqRouter.route('/:name/:year/')
     }
 });
 
-pyqRouter.route('/:name/:year/:shift')
+pyqRouter.route('/:name/:year/:id')
 .get(async (req, res) => {
     try{
         const name = req.params.name;
         const year = req.params.year;
-        const shift = req.params.shift;
-        const pyq = await PyQ.findOne({name: name,year: year,shift: shift});
+        const id = req.params.id;
+        const pyq = await PyQ.findOne({name: name,year: year,_id: id});
         // const data = pyq.PYQs.filter((item) => item.year == year && item.shift == shift);
         res.json(pyq.subjects);
     }catch(error){

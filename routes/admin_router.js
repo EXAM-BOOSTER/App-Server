@@ -26,9 +26,9 @@ router.get('/logout', (req, res) => {
     res.json({ success: true, message: "Logged out" });
 });
 
-router.use((req, res, next) => {      
-  res.header('Access-Control-Allow-Origin', 'https://admin-panel-new-nine.vercel.app');       
-});
+// router.use((req, res, next) => {      
+//   res.header('Access-Control-Allow-Origin', 'https://admin-panel-new-nine.vercel.app');       
+// });
 
 /* GET Resources */
 router.get('/resources/student', getStudentResources);

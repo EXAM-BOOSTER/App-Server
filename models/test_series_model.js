@@ -50,7 +50,7 @@ const subjectSchema = new Schema({
 })
 
 const SeriesSchema = new Schema({
-    seriesName:{type: String, required: true},
+    seriesName:{type: String, required: true, unique: true},
     isEnabled: {
         type: Boolean,
         default: false
@@ -59,7 +59,7 @@ const SeriesSchema = new Schema({
 });
 
 const testSeries = new Schema({
-    name:{type: String, required: true},
+    name:{type: String, required: true, unique: true},
     testSeries: [SeriesSchema], 
     price: {
         type: Number,
