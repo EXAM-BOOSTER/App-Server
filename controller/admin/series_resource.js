@@ -33,14 +33,14 @@ const getSeriesById = async (req, res) => {
         }
         const seriesId = req.params.id;
         const projection = { testSeries: 1 };
-        const series = await TestSeries.findOne({ _id: seriesId }, projection).sort({ _id: -1 }).skip((page - 1) * limit).limit(limit);
+        const series = await TestSeries.findOne({ _id: seriesId }, projection);
         if (!series) {
             return res.status(404).json({ error: 'Series not found' });
         }
-        const tests = series.testSeries.map(test => ({
+        const tests = series.testSeries.slice((page - 1) * limit, page * limit).map(test => ({
             _id: test._id,
             seriesName: test.seriesName,
-            isEnabled: test.isEnabled
+            isEnabled: test.isEnabled,
         }));
         res.status(200).json(tests);
     }
