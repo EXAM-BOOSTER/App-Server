@@ -45,12 +45,12 @@ const optionSchema = new Schema({
   });
 
 const subjectSchema = new Schema({
-    subjectName: {type: String, required: true, unique: true},
+    subjectName: {type: String, required: true},
     questions: [questionSchema]
 })
 
 const SeriesSchema = new Schema({
-    seriesName:{type: String, required: true, unique: true},
+    seriesName:{type: String, required: true},
     isEnabled: {
         type: Boolean,
         default: false

@@ -77,7 +77,7 @@ const putSeries = async (req, res) => {
             await series.save();
             return res.status(201).json(series);
         }
-        const filter = _id;
+        const filter = { _id };
         const update = { name, type, price, isEnabled, about };
         const series = await TestSeries.findOneAndUpdate(filter, update, {
             new: true,
@@ -100,12 +100,23 @@ const putSeriesTest = async (req, res) => {
             return res.status(404).json({ error: 'Series not found' });
         }
         if (!_id) {
+            // Check for duplicate seriesName in the current series' testSeries array
+            const duplicateTest = series.testSeries.find(test => test.seriesName === seriesName);
+            if (duplicateTest) {
+                return res.status(409).json({ error: 'Duplicate seriesName: A test with this name already exists within this series.' });
+            }
             series.testSeries.push({ seriesName, isEnabled });
             const test = series.testSeries[series.testSeries.length - 1]; // Get the newly created test
             await series.save();
             res.status(201).json(test); // Send only the newly created test in the response
         }
         else {
+            // Check for duplicate seriesName in the current series' testSeries array
+            const duplicateTest = series.testSeries.find(test => test.seriesName === seriesName && (!test._id.equals(_id)));
+            if (duplicateTest) {
+                return res.status(409).json({ error: 'Duplicate seriesName: A test with this name already exists within this series.' });
+            }
+
             const test = series.testSeries.id(_id);
             if (!test) {
                 return res.status(404).json({ error: 'Test not found' });
@@ -158,11 +169,11 @@ const putSeriesSubject = async (req, res) => {
         }
         if (!questions) {
             const sub = test.subjects.filter(sub => sub.subjectName === subject)[0];
-            if(!sub) {
-            test.subjects.push({ subjectName: subject, questions: [] });
-            }else{
+            if (!sub) {
+                test.subjects.push({ subjectName: subject, questions: [] });
+            } else {
                 return res.status(200).json({ message: 'Subject already exists' });
-            
+
             }
         }
         else {
