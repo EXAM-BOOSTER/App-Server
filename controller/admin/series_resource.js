@@ -136,21 +136,21 @@ const putSeriesTest = async (req, res) => {
 const putSeriesSubject = async (req, res) => {
     try {
         const { seriesId, testId } = req.params;
-        const files = req.files;
+        const files = req.files;        
         const { subject, questions } = req.body;
         if (files && files.length > 0) {
-            for (let file of files) {
+            for (let file of files) {                
                 // Parse the fieldname to get the indices and the key
-                const match = file.fieldname.match(/^questions\[(\d+)\](answers\[(\d+)\])?\[(\w+)\]$/);
+                const match = file.fieldname.match(/^questions\[(\d+)\](\[answers\]\[(\d+)\])?\[(\w+)\]$/);                
                 if (match) {
                     const questionIndex = parseInt(match[1]);
                     const answerIndex = match[3] ? parseInt(match[3]) : null;
-                    const key = match[4];
+                    const key = match[4];                    
 
                     // Replace the corresponding field in questions with the file's location
                     if (questions[questionIndex]) {
-                        if (answerIndex !== null && questions[questionIndex].answers && questions[questionIndex].answers[answerIndex]) {
-                            questions[questionIndex].answers[answerIndex][key] = file.location;
+                        if (answerIndex !== null && questions[questionIndex].answers && questions[questionIndex].answers[answerIndex]) {                            
+                            questions[questionIndex].answers[answerIndex][key] = file.location;                            
                         } else {
                             questions[questionIndex][key] = file.location;
                         }
@@ -158,7 +158,7 @@ const putSeriesSubject = async (req, res) => {
                 }
             }
         }
-
+        
         const series = await TestSeries.findOne({ _id: seriesId });
         if (!series) {
             return res.status(404).json({ error: 'Series not found' });
